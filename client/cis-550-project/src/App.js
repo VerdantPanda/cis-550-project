@@ -1,6 +1,6 @@
 import './App.css';
 
-import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, } from 'react-router-dom';
 
 import Root from './routes/root';
 
@@ -9,12 +9,35 @@ function App() {
     {
       path: '/',
       element: <Root />,
+      children: [
+        {
+          path: 'Dashboard',
+          element: <div>dashboard div</div>
+        },
+        {
+          path: 'songs',
+          element: <div>song search div</div>
+        },
+        {
+          path: 'artists',
+          element: <div>artist search div</div>
+        },
+        {
+          path: 'recommendations',
+          element: <div>recommendation div</div>
+        },
+        {
+          path: 'trivia',
+          element: <div>trivia div</div>
+        },
+      ]
     },
   ]);
 
   return (
     <div className="App">
       <RouterProvider router={router} />
+
     </div>
   );
 }

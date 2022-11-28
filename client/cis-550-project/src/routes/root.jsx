@@ -1,33 +1,31 @@
-import {
-  Grommet,
-  Anchor,
-  Box,
-  Button,
-  Menu,
-  PageHeader,
-  Page,
-  PageContent,
-  ResponsiveContext,
-  Sidebar,
-  Text,
-  Stack,
-  Avatar,
-  Grid,
-  Nav,
-} from 'grommet';
+import { Grommet, Box, Button, PageHeader, Sidebar, Grid, Nav } from 'grommet';
 
-import { Microphone, Music, Gamepad, Sign, Home } from 'grommet-icons';
+import { Outlet, useNavigate } from 'react-router-dom';
 
-// import { Fade, Slide, AttentionSeeker } from 'react-awesome-reveal';
+import { Microphone, Music, Gamepad, Sign, Analytics } from 'grommet-icons';
+
+import { useEffect, useState } from 'react';
+
+// import { Slide } from 'react-awesome-reveal';
 
 export default function Root() {
-  const SidebarButton = ({ icon, label, onClick }) => (
+  const navigate = useNavigate();
+  const [functCount, setFunctCount] = useState(0);
+  useEffect(() => {
+    if (functCount === 0) {
+      navigate('dashboard');
+      setFunctCount(functCount + 1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const SidebarButton = ({ icon, label, click }) => (
     <Box pad="medium" fill={true}>
       <Button
         primary
         gap="medium"
         alignSelf="start"
-        plain
+        // plain
         icon={icon}
         label={label}
         fill={true}
@@ -38,20 +36,40 @@ export default function Root() {
             opacity: 'strong',
             size: 'cover',
           },
-          elevation: 'medium',
+          elevation: 'xlarge',
         }}
-        onClick={onClick}
+        onClick={click}
       />
     </Box>
   );
 
   const MainNavigation = () => (
     <Nav aria-label="main navigation" responsive={false} fill={true}>
-      <SidebarButton icon={<Home />} label="Home" />
-      <SidebarButton icon={<Music />} label="Search for a Song" />
-      <SidebarButton icon={<Microphone />} label="Seach for an Artist" />
-      <SidebarButton icon={<Sign />} label="Recommendations" />
-      <SidebarButton icon={<Gamepad />} label="Trivia" />
+      <SidebarButton
+        click={() => navigate('dashboard')}
+        icon={<Analytics />}
+        label="Dashboard"
+      />
+      <SidebarButton
+        click={() => navigate('songs')}
+        icon={<Music />}
+        label="Search for a Song"
+      />
+      <SidebarButton
+        click={() => navigate('artists')}
+        icon={<Microphone />}
+        label="Seach for an Artist"
+      />
+      <SidebarButton
+        click={() => navigate('recommendations')}
+        icon={<Sign />}
+        label="Recommendations"
+      />
+      <SidebarButton
+        click={() => navigate('trivia')}
+        icon={<Gamepad />}
+        label="Trivia"
+      />
     </Nav>
   );
 
@@ -104,7 +122,9 @@ export default function Root() {
               <MainNavigation />
             </Sidebar>
           </Box>
-          <Box gridArea="main" background="light-2" />
+          <Box gridArea="main" background="light-2">
+            <Outlet />
+          </Box>
         </Grid>
       </Grommet>
     </div>
