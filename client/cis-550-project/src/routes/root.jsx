@@ -1,4 +1,13 @@
-import { Grommet, Box, Button, PageHeader, Sidebar, Grid, Nav } from 'grommet';
+import {
+  Grommet,
+  Box,
+  Button,
+  PageHeader,
+  Sidebar,
+  Grid,
+  Nav,
+  Notification,
+} from 'grommet';
 
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -16,15 +25,17 @@ export default function Root() {
       navigate('dashboard');
       setFunctCount(functCount + 1);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [visible, setVisible] = useState(true);
 
-  const SidebarButton = ({ icon, label, click }) => (
+  const SidebarButton = ({ icon, label, click, tip }) => (
     <Box pad="medium" fill={true}>
       <Button
         primary
         gap="medium"
         alignSelf="start"
+        tip={tip}
         // plain
         icon={icon}
         label={label}
@@ -49,26 +60,31 @@ export default function Root() {
         click={() => navigate('dashboard')}
         icon={<Analytics />}
         label="Dashboard"
+        tip="View the music data"
       />
       <SidebarButton
         click={() => navigate('songs')}
         icon={<Music />}
-        label="Search for a Song"
+        label="Songs"
+        tip="Search for a song"
       />
       <SidebarButton
         click={() => navigate('artists')}
         icon={<Microphone />}
-        label="Seach for an Artist"
+        label="Artists"
+        tip="Seach for an artist"
       />
       <SidebarButton
         click={() => navigate('recommendations')}
         icon={<Sign />}
         label="Recommendations"
+        tip="Get recommendations based on your tastes"
       />
       <SidebarButton
         click={() => navigate('trivia')}
         icon={<Gamepad />}
         label="Trivia"
+        tip="Play a music trivia game"
       />
     </Nav>
   );
@@ -88,6 +104,16 @@ export default function Root() {
           },
         }}
       >
+        <Notification
+          toast={{
+            autoClose: true,
+            position: 'top-right',
+          }}
+          title="Welcome to the Music Movie Dashboard"
+          message="TODO: add intoduction text. This is an example of a toast notification"
+          onClose={() => setVisible(false)}
+          status="info"
+        />
         <Grid
           fill="vertical"
           rows={['xsmall', 'large']}
@@ -108,7 +134,7 @@ export default function Root() {
           {/* <Box gridArea="header" background="brand">
           </Box> */}
           <PageHeader
-            title="Song & Movie Recommendations Project"
+            title="Movie Music Dashboard"
             subtitle="Please select a page."
             gridArea="header"
             size="small"

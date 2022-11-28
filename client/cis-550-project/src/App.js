@@ -1,8 +1,13 @@
 import './App.css';
 
-import { createBrowserRouter, RouterProvider, } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Root from './routes/root';
+import Dashboard from './routes/dashboard';
+import Songs from './routes/songs';
+import Artists from './routes/artists';
+import Recommendations from './routes/recommendations';
+import Trivia from './routes/trivia';
 
 function App() {
   const router = createBrowserRouter([
@@ -12,32 +17,31 @@ function App() {
       children: [
         {
           path: 'Dashboard',
-          element: <div>dashboard div</div>
+          element: <Dashboard />,
         },
         {
           path: 'songs',
-          element: <div>song search div</div>
+          element: <Songs />,
         },
         {
           path: 'artists',
-          element: <div>artist search div</div>
+          element: <Artists />,
         },
         {
           path: 'recommendations',
-          element: <div>recommendation div</div>
+          element: <Recommendations />,
         },
         {
           path: 'trivia',
-          element: <div>trivia div</div>
+          element: <Trivia />,
         },
-      ]
+      ],
     },
   ]);
 
   return (
     <div className="App">
       <RouterProvider router={router} />
-
     </div>
   );
 }
