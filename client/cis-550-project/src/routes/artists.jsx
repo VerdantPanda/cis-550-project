@@ -3,5 +3,7 @@
 // Also see songs.jsx
 
 export default function Artists() {
-  return <div>artist search react component</div>;
+  return null;
+
+  const temp = <div>artist search react component</div>;
 }
