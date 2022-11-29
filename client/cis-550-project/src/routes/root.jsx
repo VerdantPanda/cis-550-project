@@ -6,7 +6,13 @@ import {
   Sidebar,
   Grid,
   Nav,
-  Notification,
+  Layer,
+  Text,
+  Card,
+  CardFooter,
+  CardBody,
+  CardHeader,
+  Heading,
 } from 'grommet';
 
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -27,7 +33,7 @@ export default function Root() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [visible, setVisible] = useState(true);
+  const [show, setShow] = useState(true);
 
   const SidebarButton = ({ icon, label, click, tip }) => (
     <Box pad="medium" fill={true}>
@@ -104,18 +110,33 @@ export default function Root() {
           },
         }}
       >
-        <Notification
-          toast={{
-            autoClose: true,
-            position: 'top-right',
-          }}
-          title="Welcome to the Music Movie Dashboard"
-          message="TODO: add intoduction text. This is an example of a toast notification"
-          onClose={() => setVisible(false)}
-          status="info"
-        />
-        <Grid
-          fill="vertical"
+        {show && (
+          <Box>
+            <Layer
+              onEsc={() => setShow(false)}
+              onClickOutside={() => setShow(false)}
+            >
+              <Card height="medium" width="large" background="light-1">
+                <CardHeader pad="medium">
+                  <Heading>Welcome to the Music Movie Dashboard</Heading>
+                </CardHeader>
+                <CardBody pad="medium">
+                  <Text>
+                    Our site aggregates and analyzes music and movie data in order to provide tailored recommendations based on their currrent preferences. 
+                  </Text>
+                </CardBody>
+                <CardFooter pad="small">
+                  <Box alignContent="center" flex>
+                    <Button label="Begin!" onClick={() => setShow(false)} />
+                  </Box>
+                </CardFooter>
+              </Card>
+            </Layer>
+          </Box>
+        )}
+       <Box>
+       <Grid
+          fill='vertical'
           rows={['xsmall', 'large']}
           columns={['medium', 'xlarge']}
           gap="small"
@@ -152,6 +173,7 @@ export default function Root() {
             <Outlet />
           </Box>
         </Grid>
+       </Box>
       </Grommet>
     </div>
   );
