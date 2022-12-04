@@ -14,8 +14,8 @@ Select song where selected_feature == selected_value
 
 */
 // const config = require('./config.json');
-// const mysql = require('mysql');
-import mysql from 'mysql';
+const mysql = require('mysql');
+// import mysql from 'mysql';
 
 // const e = require('express');
 
@@ -35,7 +35,7 @@ async function search_song_by_name(req, res) {
   const SongName = req.query.SongName ? req.query.SongName : '';
 
   connection.query(
-    `SELECT *
+    `SELECT DISTINCT s.song_name
         FROM Song s
         WHERE s.song_name LIKE concat('%${SongName}%')
         ORDER BY s.song_name

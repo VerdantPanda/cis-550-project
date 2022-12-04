@@ -7,8 +7,8 @@ Trivia question 2: Which of the following artists incorporates the most number o
 
 // import { trivia_question_2 } from './routes/trivia.route.js';
 // const config = require('./config.json');
-import mysql from 'mysql';
-// const mysql = require('mysql');
+// import mysql from 'mysql';
+const mysql = require('mysql');
 
 // TODO: fill in your connection details here
 const connection = mysql.createConnection({
@@ -71,4 +71,6 @@ async function trivia_question_2(req, res) {
   );
 }
 
-export { trivia_question_2 };
+module.exports = {
+  trivia_question_2,
+};

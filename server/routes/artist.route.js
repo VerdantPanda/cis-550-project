@@ -18,9 +18,7 @@ Compare aggregated attributes for an artist to pull up artists with similar aggr
 
 */
 
-const config = require('./config.json');
 const mysql = require('mysql');
-const e = require('express');
 
 // TODO: fill in your connection details here
 const connection = mysql.createConnection({
@@ -145,6 +143,6 @@ async function recommended_artists(req, res) {
 }
 
 module.exports = {
-    artist_genres,
-    recommended_artists
-}
+  artist_genres,
+  recommended_artists,
+};
