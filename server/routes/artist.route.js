@@ -142,3 +142,7 @@ async function recommended_artists(req, res) {
     });
 }
 
+module.exports = {
+    artist_genres,
+    recommended_artists
+}

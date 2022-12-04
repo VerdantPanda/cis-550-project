@@ -114,3 +114,9 @@ async function songs_by_artist_1weekbillboard(req, res) {
         }
     });
 }
+
+module.exports = {
+    search_song_by_name,
+    song_info,
+    songs_by_artist_1weekbillboard
+}
