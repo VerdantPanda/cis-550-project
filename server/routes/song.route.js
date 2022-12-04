@@ -13,44 +13,50 @@ Search Songs by feature (Filtering):
 Select song where selected_feature == selected_value
 
 */
-const config = require('./config.json')
-const mysql = require('mysql');
-const e = require('express');
+// const config = require('./config.json');
+// const mysql = require('mysql');
+import mysql from 'mysql';
+
+// const e = require('express');
 
 // TODO: fill in your connection details here
 const connection = mysql.createConnection({
-    host: "database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com",
-    port: "3306",
-    user: "admin",
-    password: "450550ansibrmicmua!",
-    URL: "jdbc:mysql://database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com:3306",
+  host: 'database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com',
+  port: '3306',
+  user: 'admin',
+  password: '450550ansibrmicmua!',
+  URL: 'jdbc:mysql://database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com:3306',
+  database: 'MUSIC_DB',
 });
 connection.connect();
 
 //Route: Search a song using a song name string
 async function search_song_by_name(req, res) {
-    const SongName = req.query.SongName ? req.query.SongName : ""
+  const SongName = req.query.SongName ? req.query.SongName : '';
 
-    connection.query(`SELECT DISTINCT s.song_name
+  connection.query(
+    `SELECT *
         FROM Song s
         WHERE s.song_name LIKE concat('%${SongName}%')
         ORDER BY s.song_name
-        LIMIT 50`, function (error, results, fields){
-        if (error) {
-            console.log(error)
-            res.json({ error: error })
-        } else if (results) {
-            res.json({ results: results })
-        }
-    });
+        LIMIT 50`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
 }
-
 
 //Route: Preview song information about various features/charts about a song when the user selects a song
 async function song_info(req, res) {
-    const SongId = req.query.SongId ? req.query.SongId : 0
+  const SongId = req.query.SongId ? req.query.SongId : 0;
 
-    connection.query(`SELECT song_name, album, song_year, track_number, disc_number, explicit,
+  connection.query(
+    `SELECT song_name, album, song_year, track_number, disc_number, explicit,
         danceability, energy, music_key, loudness,
         speechiness, acousticness, instrumentalness,
         liveness, valence, tempo, duration_ms,
@@ -82,21 +88,24 @@ async function song_info(req, res) {
             WHERE b.song_id = ${SongId}
             GROUP BY b.song_id) as weeks_on_billboard
         FROM Song s
-        WHERE s.song_id = ${SongId}`, function (error, results, fields){
-        if (error) {
-            console.log(error)
-            res.json({ error: error })
-        } else if (results) {
-            res.json({ results: results })
-        }
-    });
+        WHERE s.song_id = ${SongId}`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
 }
 
 //Route: Display the songs for a specific artists that have been on the billboard charts for at least 1 week
 async function songs_by_artist_1weekbillboard(req, res) {
-    const ArtistName = req.query.ArtistName ? req.query.ArtistName : ""
+  const ArtistName = req.query.ArtistName ? req.query.ArtistName : '';
 
-    connection.query(`
+  connection.query(
+    `
         select distinct s.song_name, max(b.peak_rank) as peak_rank
         from Billboard b
         left join Song s on b.song_id = s.song_id
@@ -105,12 +114,16 @@ async function songs_by_artist_1weekbillboard(req, res) {
             where artist_name = '%${ArtistName}%'
             )
         group by s.song_name
-        order by peak_rank`, function (error, results, fields){
-        if (error) {
-            console.log(error)
-            res.json({ error: error })
-        } else if (results) {
-            res.json({ results: results })
-        }
-    });
+        order by peak_rank`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
 }
+
+export { search_song_by_name };

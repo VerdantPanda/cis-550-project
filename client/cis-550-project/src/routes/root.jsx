@@ -136,7 +136,7 @@ export default function Root() {
         )}
        <Box>
        <Grid
-          fill='vertical'
+          // fill='vertical'
           rows={['xsmall', 'large']}
           columns={['medium', 'xlarge']}
           gap="small"
@@ -145,17 +145,17 @@ export default function Root() {
             { name: 'nav', start: [0, 1], end: [0, 1] },
             { name: 'main', start: [1, 1], end: [1, 1] },
           ]}
-          border={{
-            color: 'purple',
-            size: 'medium',
-            style: 'solid',
-            side: 'top',
-          }}
+          // border={{
+          //   color: 'purple',
+          //   size: 'medium',
+          //   style: 'solid',
+          //   side: 'top',
+          // }}
         >
           {/* <Box gridArea="header" background="brand">
           </Box> */}
           <PageHeader
-            title="Movie Music Dashboard"
+            title="Movie Music Dashboard 11"
             subtitle="Please select a page."
             gridArea="header"
             size="small"

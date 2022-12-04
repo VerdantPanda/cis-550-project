@@ -18,29 +18,27 @@ Compare aggregated attributes for an artist to pull up artists with similar aggr
 
 */
 
-
-
-const config = require('./config.json')
+const config = require('./config.json');
 const mysql = require('mysql');
 const e = require('express');
 
 // TODO: fill in your connection details here
 const connection = mysql.createConnection({
-    host: "database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com",
-    port: "3306",
-    user: "admin",
-    password: "450550ansibrmicmua!",
-    URL: "jdbc:mysql://database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com:3306",
+  host: 'database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com',
+  port: '3306',
+  user: 'admin',
+  password: '450550ansibrmicmua!',
+  URL: 'jdbc:mysql://database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com:3306',
 });
 connection.connect();
 
 //Route: Display the genres that a specific artist incorporates when a user selects an artist to see
 //information on that artists’ page.
 async function artist_genres(req, res) {
-    const ArtistName = req.query.ArtistName ? req.query.ArtistName : ""
+  const ArtistName = req.query.ArtistName ? req.query.ArtistName : '';
 
-    connection.query(
-        `WITH attributes as
+  connection.query(
+    `WITH attributes as
             (select artist_name,
                 avg(s.danceability) as artist_danceability,
             avg(s.energy) as artist_energy,
@@ -76,23 +74,25 @@ async function artist_genres(req, res) {
                             (select artist_valence+0.2 from attributes)
         and g.tempo between (select artist_tempo-20 from attributes) and
                             (select artist_tempo+20 from attributes)
-        limit 10`, function (error, results, fields){
-        if (error) {
-            console.log(error)
-            res.json({ error: error })
-        } else if (results) {
-            res.json({ results: results })
-        }
-    });
+        limit 10`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
 }
 
 //Route: Given an artist, display a set of recommended artists that share similar song
 //features as the selected artist. This is a complex query.
 async function recommended_artists(req, res) {
-    const ArtistName = req.query.ArtistName ? req.query.ArtistName : ""
+  const ArtistName = req.query.ArtistName ? req.query.ArtistName : '';
 
-    connection.query(
-        `WITH attributes as
+  connection.query(
+    `WITH attributes as
             (select a.artist_name,
             avg(s.danceability) as artist_danceability,
             avg(s.energy) as artist_energy,
@@ -132,13 +132,14 @@ async function recommended_artists(req, res) {
         and avg(s.valence) between (select artist_valence-0.2 from attributes) and
                 (select artist_valence+0.2 from attributes)
         and avg(s.tempo) between (select artist_tempo-10 from attributes) and
-                (select artist_tempo+10 from attributes)`, function (error, results, fields){
-        if (error) {
-            console.log(error)
-            res.json({ error: error })
-        } else if (results) {
-            res.json({ results: results })
-        }
-    });
+                (select artist_tempo+10 from attributes)`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
 }
-
