@@ -114,16 +114,18 @@ async function songs_by_artist_1weekbillboard(req, res) {
             where artist_name = '%${ArtistName}%'
             )
         group by s.song_name
-        order by peak_rank`,
-    function (error, results, fields) {
-      if (error) {
-        console.log(error);
-        res.json({ error: error });
-      } else if (results) {
-        res.json({ results: results });
-      }
-    }
-  );
+        order by peak_rank`, function (error, results, fields){
+        if (error) {
+            console.log(error)
+            res.json({ error: error })
+        } else if (results) {
+            res.json({ results: results })
+        }
+    });
 }
 
-export { search_song_by_name };
+module.exports = {
+    search_song_by_name,
+    song_info,
+    songs_by_artist_1weekbillboard
+}
