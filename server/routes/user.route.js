@@ -5,7 +5,7 @@ Create user to store in database
 */
 
 
-// TODO: below is old code from 557 project
+// TODO: below is old code from CIS 557 project
 
 // const router = require('express').Router();
 // let ObjectId = require('mongodb').ObjectID;

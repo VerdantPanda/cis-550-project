@@ -3,14 +3,11 @@
 Trivia question 1: An artist who is top of the billboard and also incorporates multiple genres
 
 Trivia question 2: Which of the following artists incorporates the most number of genres?
-*/
 
-// import { trivia_question_2 } from './routes/trivia.route.js';
-// const config = require('./config.json');
-// import mysql from 'mysql';
+Trivia question 3: Which of the following artists has featured with the most number of other artists?#
+*/
 const mysql = require('mysql');
 
-// TODO: fill in your connection details here
 const connection = mysql.createConnection({
   host: 'database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com',
   port: '3306',
@@ -21,10 +18,55 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
+async function trivia_question_1(req, res) {
+  connection.query(
+    `select *
+      from (
+        with correct_answer as
+                (
+                    select a.artist_name
+                    from Song_artist a join Song s on s.song_id=a.song_id
+                    where a.song_id in (
+                        select distinct song_id
+                        from Billboard
+                        where billboard_rank = 1
+                        )
+                    and a.song_id in (
+                        select distinct song_id
+                        from Soundtrack_song
+                )
+                    limit 1
+                )
+            select artist_name, 'Correct' as answer_choice
+            from correct_answer
+            union
+            select a.artist_name, 'Incorrect' as answer_choice
+            from Song_artist a join Song s on s.song_id=a.song_id
+            where a.song_id not in (
+                select distinct song_id
+                from Billboard
+                where billboard_rank = 1
+                )
+            and a.song_id not in (
+                select distinct song_id
+                from Soundtrack_song
+                )
+            limit 4
+        ) a
+      order by a.artist_name;`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
 //Route:  Which of the following artists incorporates the most number of genres?
 async function trivia_question_2(req, res) {
-  const SongName = req.query.SongName ? req.query.SongName : '';
-
   connection.query(
     `select artist_name,
     genre_count
@@ -71,6 +113,36 @@ async function trivia_question_2(req, res) {
   );
 }
 
+async function trivia_question_3(req, res) {
+  connection.query(
+    `with correct_answer as (
+        select a.artist_name,
+      count(b.artist_name) as featured_artist_count
+      from Song_artist a
+      join Song_artist b on a.song_id = b.song_id and a.artist_name <> b.artist_name
+      group by a.artist_name
+      order by featured_artist_count desc
+      limit 1)
+    select artist_name, 'Correct' as answer_choice
+    from correct_answer
+    union
+    select artist_name, 'Incorrect' as answer_choice
+    from Song_artist
+    where artist_name <> (select artist_name from correct_answer)
+    limit 4;`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
 module.exports = {
+  trivia_question_1,
   trivia_question_2,
+  trivia_question_3,
 };

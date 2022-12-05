@@ -27,6 +27,7 @@ const connection = mysql.createConnection({
   user: 'admin',
   password: '450550ansibrmicmua!',
   URL: 'jdbc:mysql://database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com:3306',
+  database: 'MUSIC_DB',
 });
 connection.connect();
 
@@ -142,7 +143,56 @@ async function recommended_artists(req, res) {
   );
 }
 
+async function search_artists_from_genres(req, res) {
+  const GenreName = req.query.GenreName ? req.query.GenreName : '';
+  connection.query(
+    `WITH attributes as
+    (select s.danceability as artist_danceability,
+            s.energy as artist_energy,
+            s.loudness as artist_loudness,
+            s.speechiness as artist_speechiness,
+            s.acousticness as artist_acousticness,
+            s.instrumentalness as artist_instrumentallness,
+            s.liveness as artist_liveness,
+            s.valence as artist_valence,
+            s.tempo as artist_tempo
+     from Genre s
+     where s.genre_name = \'${GenreName}\'
+      )
+    select a.artist_name as recommended_artists
+    from Song_artist a join Song s on s.song_id = a.song_id
+    group by a.artist_name
+    having avg(s.danceability) between (select artist_danceability-0.2 from attributes) and
+                                    (select artist_danceability+0.2 from attributes)
+    and avg(s.energy) between (select artist_energy-0.2 from attributes) and
+                                    (select artist_energy+0.2 from attributes)
+    and avg(s.loudness) between (select artist_loudness-0.4 from attributes) and
+                                    (select artist_loudness+0.4 from attributes)
+    and avg(s.speechiness) between (select artist_speechiness-0.2 from attributes) and
+                                    (select artist_speechiness+0.2 from attributes)
+    and avg(s.acousticness) between (select artist_acousticness-0.2 from attributes) and
+                                    (select artist_acousticness+0.2 from attributes)
+    and avg(s.instrumentalness) between (select artist_instrumentallness-0.2 from attributes) and
+                                    (select artist_instrumentallness+0.2 from attributes)
+    and avg(s.liveness) between (select artist_liveness-0.2 from attributes) and
+                                    (select artist_liveness+0.2 from attributes)
+    and avg(s.valence) between (select artist_valence-0.2 from attributes) and
+                                    (select artist_valence+0.2 from attributes)
+    and avg(s.tempo) between (select artist_tempo-10 from attributes) and
+                                    (select artist_tempo+10 from attributes);`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
 module.exports = {
   artist_genres,
   recommended_artists,
+  search_artists_from_genres,
 };
