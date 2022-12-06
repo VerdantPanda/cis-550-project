@@ -16,6 +16,7 @@ import {
   CardFooter,
   CardHeader,
   Button,
+  Spinner,
 } from 'grommet';
 
 import { search_song_by_name } from '../network.js';
@@ -36,63 +37,26 @@ export default function Songs() {
   useEffect(() => {
     const fechData = async () => {
       console.log('useEffectCalled');
-      let temp = await search_song_by_name('Waterloo');
+      let temp = await search_song_by_name('Dogs');
       console.log('TEMP DATA:');
       console.log(temp);
       setSongDataList(temp);
+      setSongs(temp);
     };
-    // fechData();
+    fechData();
   }, []);
-
-  // const song_data_list = [
-  //   {
-  //     song_name: 'Elanor rigby',
-  //     album: 'Beatlemania',
-  //     explicit: 0,
-  //     duration_ms: 200000,
-  //     song_year: 2000,
-  //   },
-  //   {
-  //     song_name: 'Just Dance',
-  //     album: 'KidzBop IV',
-  //     explicit: 0,
-  //     duration_ms: 200000,
-  //     song_year: 2000,
-  //   },
-  //   {
-  //     song_name: 'Janey Yellen',
-  //     album: 'The Economist',
-  //     explicit: 1,
-  //     duration_ms: 200000,
-  //     song_year: 2000,
-  //   },
-  //   {
-  //     song_name: 'Apple Pie',
-  //     album: 'As American as...',
-  //     explicit: 0,
-  //     duration_ms: 200000,
-  //     song_year: 2000,
-  //   },
-  //   {
-  //     song_name: 'Yellow Submarine',
-  //     album: 'Abby Road',
-  //     explicit: 1,
-  //     duration_ms: 200000,
-  //     song_year: 2000,
-  //   },
-  // ];
 
   const [value, setValue] = useState('');
   const [song_data_list, setSongDataList] = useState([]);
   const [songs, setSongs] = useState([]);
 
   const [currentSong, setCurrentSong] = useState({
-    song_name: 'Again The Waterloo',
-    song_id: 190624,
-    album: 'Calling Zero',
+    song_name: '-',
+    song_id: 0,
+    album: '',
     explicit: 0,
-    duration_ms: 207253,
-    song_year: 2002,
+    duration_ms: 0,
+    song_year: 0,
   });
 
   const onChange = (event) => {
@@ -108,7 +72,18 @@ export default function Songs() {
     }
   };
 
-  return (
+  return !song_data_list ? (
+    <Box
+      fill
+      align="center"
+      justify="start"
+      pad="large"
+      gap="medium"
+      animation="fadeIn"
+    >
+      <Spinner size="xlarge"></Spinner>
+    </Box>
+  ) : (
     <Box
       fill
       align="center"
