@@ -1,4 +1,5 @@
-import { Fade } from 'react-awesome-reveal';
+//TODO: ibrahim finish this
+import { Fade, AttentionSeeker } from 'react-awesome-reveal';
 
 import {
   Box,
@@ -16,23 +17,96 @@ import {
   CardHeader,
   Button,
 } from 'grommet';
+
+import { search_song_by_name } from '../network.js';
+
 import { Favorite, ShareOption } from 'grommet-icons';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+function millisToMinutesAndSeconds(millis) {
+  var minutes = Math.floor(millis / 60000);
+  var seconds = ((millis % 60000) / 1000).toFixed(0);
+  // return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  return minutes + ' minutes and ' + seconds + ' seconds';
+}
 
 export default function Songs() {
+  // TODO: make call to server
+  useEffect(() => {
+    const fechData = async () => {
+      console.log('useEffectCalled');
+      let temp = await search_song_by_name('Waterloo');
+      console.log('TEMP DATA:');
+      console.log(temp);
+      setSongDataList(temp);
+    };
+    // fechData();
+  }, []);
+
+  // const song_data_list = [
+  //   {
+  //     song_name: 'Elanor rigby',
+  //     album: 'Beatlemania',
+  //     explicit: 0,
+  //     duration_ms: 200000,
+  //     song_year: 2000,
+  //   },
+  //   {
+  //     song_name: 'Just Dance',
+  //     album: 'KidzBop IV',
+  //     explicit: 0,
+  //     duration_ms: 200000,
+  //     song_year: 2000,
+  //   },
+  //   {
+  //     song_name: 'Janey Yellen',
+  //     album: 'The Economist',
+  //     explicit: 1,
+  //     duration_ms: 200000,
+  //     song_year: 2000,
+  //   },
+  //   {
+  //     song_name: 'Apple Pie',
+  //     album: 'As American as...',
+  //     explicit: 0,
+  //     duration_ms: 200000,
+  //     song_year: 2000,
+  //   },
+  //   {
+  //     song_name: 'Yellow Submarine',
+  //     album: 'Abby Road',
+  //     explicit: 1,
+  //     duration_ms: 200000,
+  //     song_year: 2000,
+  //   },
+  // ];
+
   const [value, setValue] = useState('');
-  const [currentSong, setCurrentSong] = useState({ name: 'Song Title', artist: 'Artist', genre: 'Genre' })
+  const [song_data_list, setSongDataList] = useState([]);
+  const [songs, setSongs] = useState([]);
 
-  const onChange = (event) => setValue(event.target.value);
+  const [currentSong, setCurrentSong] = useState({
+    song_name: 'Again The Waterloo',
+    song_id: 190624,
+    album: 'Calling Zero',
+    explicit: 0,
+    duration_ms: 207253,
+    song_year: 2002,
+  });
 
-  const songs = [
-    { name: 'Elanor rigby', artist: 'Bob John', genre: 'jazz' },
-    { name: 'Just Dance', artist: 'Bob John', genre: 'jazz' },
-    { name: 'Janey Yellen', artist: 'Bob John', genre: 'jazz' },
-    { name: 'Apple Pie', artist: 'Bob John', genre: 'jazz' },
-    { name: 'Yellow Submarine', artist: 'Bob John', genre: 'jazz' },
-  ];
+  const onChange = (event) => {
+    setValue(event.target.value);
+    if (value.length > 1) {
+      setSongs(
+        song_data_list.filter((song) => {
+          return song.song_name.includes(value.trim());
+        })
+      );
+    } else {
+      setSongs(song_data_list);
+    }
+  };
 
   return (
     <Box
@@ -60,25 +134,47 @@ export default function Songs() {
         >
           <InfiniteScroll items={songs} step={5}>
             {(item) => (
-              <Box
-                flex={false}
-                pad="medium"
-                background={`dark-${(item % 3) + 1}`}
-                border={{ color: 'brand', size: 'small' }}
-                elevation="large"
-              >
-                <Text>{item.name}</Text>
-              </Box>
+              <Fade key={item.song_id}>
+                <Box
+                  flex={false}
+                  pad="medium"
+                  margin="small"
+                  background={`dark-${(item % 3) + 1}`}
+                  border={{ color: 'brand', size: 'small' }}
+                  elevation="large"
+                  onClick={() => {
+                    setCurrentSong(item);
+                  }}
+                >
+                  <Text>{item.song_name}</Text>
+                </Box>
+              </Fade>
             )}
           </InfiniteScroll>
         </Box>
         <Box>
           <Card height="medium" width="medium" background="light-4">
-            <CardHeader pad="medium">{currentSong.name}</CardHeader>
+            <CardHeader pad="medium">
+              <Text size="large">{currentSong.song_name}</Text>
+            </CardHeader>
+
             <CardBody pad="medium">
-              Other Song Information: Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua.
+              <Text
+                size="small"
+                textAlign="start"
+                margin={{ bottom: 'medium' }}
+              >
+                Album: {currentSong.album}
+                <br />
+                <br />
+                Year: {currentSong.song_year}
+                <br />
+                <br />
+                {millisToMinutesAndSeconds(currentSong.duration_ms)}
+                <br />
+                <br />
+                {currentSong.explicit ? 'Explicit' : null}
+              </Text>
             </CardBody>
             <CardFooter pad={{ horizontal: 'small' }} background="light-2">
               <Button icon={<Favorite color="red" />} hoverIndicator />

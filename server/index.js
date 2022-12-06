@@ -1,11 +1,16 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const port = 3000;
+const port = 3001;
 
 const artistRoutes = require('./routes/artist.route');
 const songRoutes = require('./routes/song.route');
 const triviaRoutes = require('./routes/trivia.route');
 const userRoutes = require('./routes/user.route');
+
+app.use(cors({
+  origin: '*'
+}));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

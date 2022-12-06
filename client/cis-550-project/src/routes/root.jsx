@@ -122,7 +122,9 @@ export default function Root() {
                 </CardHeader>
                 <CardBody pad="medium">
                   <Text>
-                    Our site aggregates and analyzes music and movie data in order to provide tailored recommendations based on their currrent preferences. 
+                    Our site aggregates and analyzes music and movie data in
+                    order to provide tailored recommendations based on their
+                    currrent preferences.
                   </Text>
                 </CardBody>
                 <CardFooter pad="small">
@@ -134,46 +136,46 @@ export default function Root() {
             </Layer>
           </Box>
         )}
-       <Box>
-       <Grid
-          // fill='vertical'
-          rows={['xsmall', 'large']}
-          columns={['medium', 'xlarge']}
-          gap="small"
-          areas={[
-            { name: 'header', start: [0, 0], end: [1, 0] },
-            { name: 'nav', start: [0, 1], end: [0, 1] },
-            { name: 'main', start: [1, 1], end: [1, 1] },
-          ]}
-          // border={{
-          //   color: 'purple',
-          //   size: 'medium',
-          //   style: 'solid',
-          //   side: 'top',
-          // }}
-        >
-          {/* <Box gridArea="header" background="brand">
+        <Box>
+          <Grid
+            // fill='vertical'
+            rows={['xsmall', 'large']}
+            columns={['medium', 'xlarge']}
+            gap="small"
+            areas={[
+              { name: 'header', start: [0, 0], end: [1, 0] },
+              { name: 'nav', start: [0, 1], end: [0, 1] },
+              { name: 'main', start: [1, 1], end: [1, 1] },
+            ]}
+            // border={{
+            //   color: 'purple',
+            //   size: 'medium',
+            //   style: 'solid',
+            //   side: 'top',
+            // }}
+          >
+            {/* <Box gridArea="header" background="brand">
           </Box> */}
-          <PageHeader
-            title="Movie Music Dashboard 11"
-            subtitle="Please select a page."
-            gridArea="header"
-            size="small"
-          />
-          <Box gridArea="nav" background="light-5">
-            <Sidebar
-              responsive={true}
-              background="light-2"
-              pad={{ vertical: 'medium' }}
-            >
-              <MainNavigation />
-            </Sidebar>
-          </Box>
-          <Box gridArea="main" background="light-2">
-            <Outlet />
-          </Box>
-        </Grid>
-       </Box>
+            <PageHeader
+              title="Movie Music Dashboard 11"
+              subtitle="Please select a page."
+              gridArea="header"
+              size="small"
+            />
+            <Box gridArea="nav" background="light-5">
+              <Sidebar
+                responsive={true}
+                background="light-2"
+                pad={{ vertical: 'medium' }}
+              >
+                <MainNavigation />
+              </Sidebar>
+            </Box>
+            <Box gridArea="main" background="light-2">
+              <Outlet />
+            </Box>
+          </Grid>
+        </Box>
       </Grommet>
     </div>
   );
