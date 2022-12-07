@@ -47,13 +47,21 @@ export default function Recommendations() {
   useEffect(() => {
     const fechData = async () => {
       console.log('useEffectCalled_r');
-      let temp = await search_song_by_name('Dogs');
+      let temp = await search_song_by_name('Some Feeling');
       console.log('TEMP DATA:');
       console.log(temp);
       setSongDataList(temp);
       setSongs(temp);
     };
+
+    const fechData2 = async () => {
+      console.log('useEffectCalled_r');
+
+      let temp2 = await song_recommendations(7215);
+      setRecommendedSongs(temp2);
+    };
     fechData();
+    fechData2()
   }, []);
 
   const [value, setValue] = useState('');
@@ -69,9 +77,7 @@ export default function Recommendations() {
     song_year: 0,
   });
 
-  const [recommendedSongs, setRecommendedSongs] = useState(
-    []    
-  )
+  const [recommendedSongs, setRecommendedSongs] = useState([]);
 
   const onChange = (event) => {
     setValue(event.target.value);
@@ -133,7 +139,8 @@ export default function Recommendations() {
                   elevation="large"
                   onClick={() => {
                     setCurrentSong(item);
-                    setRecommendedSongs(song_recommendations(item.song_id))
+
+                    //setRecommendedSongs(song_recommendations(currentSong.song_id));
                   }}
                 >
                   <Text>{item.song_name}</Text>
@@ -143,6 +150,34 @@ export default function Recommendations() {
           </InfiniteScroll>
         </Box>
         <Box>
+          <Box
+            height="100%"
+            fill="horizontal"
+            overflow="auto"
+            background={{ color: 'neutral-2' }}
+          >
+            <InfiniteScroll items={recommendedSongs} step={5}>
+              {(item) => (
+                <Fade key={item.song_id}>
+                  <Box
+                    flex={false}
+                    pad="medium"
+                    margin="small"
+                    background={`dark-${(item % 3) + 1}`}
+                    border={{ color: 'brand', size: 'small' }}
+                    elevation="large"
+                    onClick={() => {
+                      setCurrentSong(item);
+                      
+                      //setRecommendedSongs(song_recommendations(currentSong.song_id));
+                    }}
+                  >
+                    <Text>{item.song_name}</Text>
+                  </Box>
+                </Fade>
+              )}
+            </InfiniteScroll>
+          </Box>
           <Card height="medium" width="medium" background="light-4">
             <CardHeader pad="medium">
               <Text size="large"> Recommended Songs for {currentSong.song_name}:</Text>

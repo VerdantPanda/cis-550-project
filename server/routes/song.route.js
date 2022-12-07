@@ -124,7 +124,7 @@ async function songs_by_artist_1weekbillboard(req, res) {
 
 //Route: Get recommendations based on a given song title.
 async function song_recommendations(req, res) {
-  const SongId = req.query.SongId ? req.query.SongId : '';
+  const SongId = req.query.SongId ? req.query.SongId : 1;
   connection.query(
     `WITH attributes as
         (select s.song_name,
