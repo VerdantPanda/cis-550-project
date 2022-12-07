@@ -34,7 +34,7 @@ async function search_song_by_name(SongName) {
   return axios
     .get(serverAddress + '/song/search', { params: { SongName: SongName } })
     .then((response) => {
-      //   console.log(response.data);
+      //console.log(response.data);
       return response.data.results;
     });
 }
@@ -59,7 +59,8 @@ async function song_recommendations(SongId) {
   axios
     .get(serverAddress + '/song/recommended', { params: { SongId } })
     .then((response) => {
-      console.log(response.data);
+      console.log(response.data.results);
+      return response.data.results;
     });
 }
 

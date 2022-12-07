@@ -53,15 +53,20 @@ export default function Recommendations() {
       setSongDataList(temp);
       setSongs(temp);
     };
+    fechData();
+  }, []);
 
+  useEffect(() => {
     const fechData2 = async () => {
-      console.log('useEffectCalled_r');
+      console.log('useEffectCalled_rec');
 
       let temp2 = await song_recommendations(7215);
+      console.log('TEMP DATA_2:');
+      console.log(temp2);
+      console.log(recommendedSongs);
       setRecommendedSongs(temp2);
     };
-    fechData();
-    fechData2()
+    fechData2();
   }, []);
 
   const [value, setValue] = useState('');
@@ -156,7 +161,7 @@ export default function Recommendations() {
             overflow="auto"
             background={{ color: 'neutral-2' }}
           >
-            <InfiniteScroll items={recommendedSongs} step={5}>
+            <InfiniteScroll items={songs} step={5}>
               {(item) => (
                 <Fade key={item.song_id}>
                   <Box
