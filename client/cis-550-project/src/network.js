@@ -39,6 +39,15 @@ async function search_song_by_name(SongName) {
     });
 }
 
+async function search_artist_by_name(ArtistName) {
+  return axios
+    .get(serverAddress + '/artist/search', { params: { ArtistName: ArtistName } })
+    .then((response) => {
+      //   console.log(response.data);
+      return response.data.results;
+    });
+}
+
 async function song_info(SongId) {
   axios
     .get(serverAddress + '/song/info', { params: { SongId } })
@@ -86,6 +95,7 @@ export {
   recommended_artists,
   search_artists_from_genres,
   search_song_by_name,
+  search_artist_by_name,
   song_info,
   songs_by_artist_1weekbillboard,
   song_recommendations,
