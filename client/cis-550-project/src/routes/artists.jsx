@@ -6,4 +6,5 @@ export default function Artists() {
   return null;
 
   const temp = <div>artist search react component</div>;
+  return <div>artist page</div>;
 }

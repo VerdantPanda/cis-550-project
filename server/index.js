@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
+app.get('/artist/search', artistRoutes.search_artist_by_name);
 app.get('/artist/genres', artistRoutes.artist_genres);
 
 app.get('/artist/recommended', artistRoutes.recommended_artists);

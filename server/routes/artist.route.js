@@ -35,7 +35,6 @@ connection.connect();
 //information on that artists’ page.
 async function artist_genres(req, res) {
   const ArtistName = req.query.ArtistName ? req.query.ArtistName : '';
-
   connection.query(
     `WITH attributes as
             (select artist_name,
@@ -53,7 +52,7 @@ async function artist_genres(req, res) {
             where sa.artist_name = '${ArtistName}'
             Group by sa.artist_name
             )
-        select g.genre_name as artist_genres -- consider calculated distance score
+        select g.genre_name as artist_genres
         from Genre g
         where g.danceability between (select artist_danceability-0.2 from attributes) and
                             (select artist_danceability+0.2 from attributes)
@@ -191,8 +190,31 @@ async function search_artists_from_genres(req, res) {
   );
 }
 
+//Route: Search an artist using an artist name string
+async function search_artist_by_name(req, res) {
+  const ArtistName = req.query.ArtistName ? req.query.ArtistName : '';
+
+  connection.query(
+    `SELECT DISTINCT a.artist_name
+        FROM Song_artist a
+        WHERE a.artist_name LIKE '%${ArtistName}%'
+        ORDER BY a.artist_name
+        LIMIT 50`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
+
 module.exports = {
   artist_genres,
   recommended_artists,
   search_artists_from_genres,
+  search_artist_by_name,
 };
