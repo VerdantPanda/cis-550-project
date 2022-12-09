@@ -157,7 +157,7 @@ export default function Root() {
             {/* <Box gridArea="header" background="brand">
           </Box> */}
             <PageHeader
-              title="Movie Music Dashboard 11"
+              title="Movie Music Dashboard"
               subtitle="Please select a page."
               gridArea="header"
               size="small"

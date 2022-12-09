@@ -20,7 +20,6 @@ Compare aggregated attributes for an artist to pull up artists with similar aggr
 
 const mysql = require('mysql');
 
-// TODO: fill in your connection details here
 const connection = mysql.createConnection({
   host: 'database-550-project.cuttkkiuv1vf.us-east-2.rds.amazonaws.com',
   port: '3306',
@@ -103,7 +102,7 @@ async function recommended_artists(req, res) {
             avg(s.valence) as artist_valence,
             avg(s.tempo) as artist_tempo
             from Song s join Song_artist a on s.song_id = a.song_id
-            where a.artist_name = '%${ArtistName}%'
+            where a.artist_name = \'${ArtistName}\'
             group by a.artist_name
             )
         select a.artist_name as recommended_artists
