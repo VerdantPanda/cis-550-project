@@ -74,9 +74,11 @@ async function song_recommendations(SongId) {
 }
 
 async function trivia_question_1() {
-  axios.get(serverAddress + '/trivia1', {}).then((response) => {
-    console.log(response.data);
-  });
+  return axios
+    .get(serverAddress + '/trivia1', {})
+    .then((response) => {
+      return response.data.results;
+    });
 }
 
 async function trivia_question_2() {
@@ -91,6 +93,29 @@ async function trivia_question_3() {
   });
 }
 
+async function trivia_question(QuestionId) {
+  return axios
+  .get(serverAddress + '/triviaquestion', {params: { QuestionId }})
+  .then((response) => {
+    return response.data.results;
+});
+}
+async function trivia_info(QuestionId) {
+return axios
+.get(serverAddress + '/triviainfo', {params: { QuestionId }})
+.then((response) => {
+  return response.data.results;
+});
+}
+
+async function trivia_answers(QuestionId) {
+return axios
+  .get(serverAddress + '/triviaanswers', {params: { QuestionId }})
+  .then((response) => {
+    return response.data.results;
+});
+}
+
 export {
   artist_genres,
   recommended_artists,
@@ -103,4 +128,7 @@ export {
   trivia_question_1,
   trivia_question_2,
   trivia_question_3,
+  trivia_question,
+  trivia_info,
+  trivia_answers
 };

@@ -141,8 +141,65 @@ async function trivia_question_3(req, res) {
   );
 }
 
+async function trivia_question(req, res) {
+  const QuestionId = req.query.QuestionId ? req.query.QuestionId : '';
+  connection.query(
+    `Select question_text
+     From Trivia_questions
+     Where questionId = ${QuestionId}
+    ;`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
+async function trivia_info(req, res) {
+  const QuestionId = req.query.QuestionId ? req.query.QuestionId : '';
+  connection.query(
+    `Select question_info
+     From Trivia_questions
+     Where questionId = ${QuestionId}
+    ;`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
+async function trivia_answers(req, res) {
+  const QuestionId = req.query.QuestionId ? req.query.QuestionId : '';
+  connection.query(
+    `Call sp_TriviaAnswers(${QuestionId});`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
+
+
+
 module.exports = {
   trivia_question_1,
   trivia_question_2,
   trivia_question_3,
+  trivia_question,
+  trivia_info,
+  trivia_answers
 };
