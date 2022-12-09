@@ -56,18 +56,18 @@ export default function Recommendations() {
     fechData();
   }, []);
 
-  useEffect(() => {
-    const fechData2 = async () => {
-      console.log('useEffectCalled_rec');
+  // useEffect(() => {
+  //   const fechData2 = async () => {
+  //     console.log('useEffectCalled_rec');
 
-      let temp2 = await song_recommendations(7215);
-      console.log('TEMP DATA_2:');
-      console.log(temp2);
-      console.log(recommendedSongs);
-      setRecommendedSongs(temp2);
-    };
-    fechData2();
-  }, []);
+  //     let temp2 = await song_recommendations(7215);
+  //     console.log('TEMP DATA_2:');
+  //     console.log(temp2);
+  //     console.log(recommendedSongs);
+  //     setRecommendedSongs(temp2);
+  //   };
+  //   fechData2();
+  // }, []);
 
   const [value, setValue] = useState('');
   const [song_data_list, setSongDataList] = useState([]);
@@ -97,7 +97,7 @@ export default function Recommendations() {
     }
   };
 
-  return !song_data_list ? (
+  return !song_data_list.length === 0 ? (
     <Box
       fill
       align="center"
@@ -117,13 +117,46 @@ export default function Recommendations() {
       gap="medium"
       animation="fadeIn"
     >
-      <Box width="medium" fill="horizontal">
+      <Text size="xlarge" textAlign="start" weight="lighter">
+        Type in the name of a song and click it to retrieve relevant
+        information.<br></br>If nothing immediately shows up, click the{' '}
+        <b>Search</b> button to do a deep search of our database.
+      </Text>
+      <Box width="medium" fill="horizontal" direction="row">
         <TextInput
           id="grommet-text-combobox-default-suggestion"
           value={value}
           onChange={onChange}
           placeholder="Enter the name of a song"
         />
+        <Box pad={{ horizontal: 'small' }}>
+          <Button
+            size="large"
+            primary
+            label="Search "
+            onClick={async (e) => {
+              console.log('Search button clicked');
+              let temp = await search_song_by_name(value);
+              console.log('TEMP DATA:');
+              console.log(temp);
+
+              if (temp.length === 0) {
+                temp = [
+                  {
+                    song_name: 'Song Not Found',
+                    song_id: 0,
+                    album: '',
+                    explicit: 0,
+                    duration_ms: 0,
+                    song_year: 0,
+                  },
+                ];
+              }
+              setSongDataList(temp);
+              setSongs(temp);
+            }}
+          ></Button>
+        </Box>
       </Box>
       <Box direction="row" fill={true} gap="small">
         <Box
@@ -142,10 +175,15 @@ export default function Recommendations() {
                   background={`dark-${(item % 3) + 1}`}
                   border={{ color: 'brand', size: 'small' }}
                   elevation="large"
-                  onClick={() => {
+                  onClick={async() => {
                     setCurrentSong(item);
 
-                    //setRecommendedSongs(song_recommendations(currentSong.song_id));
+                    console.log('Query button clicked');
+                    let temp = await song_recommendations(item.song_id);
+                    console.log('TEMP DATA:');
+                    console.log(temp);
+
+                    setRecommendedSongs(temp);
                   }}
                 >
                   <Text>{item.song_name}</Text>
@@ -155,37 +193,10 @@ export default function Recommendations() {
           </InfiniteScroll>
         </Box>
         <Box>
-          <Box
-            height="100%"
-            fill="horizontal"
-            overflow="auto"
-            background={{ color: 'neutral-2' }}
-          >
-            <InfiniteScroll items={songs} step={5}>
-              {(item) => (
-                <Fade key={item.song_id}>
-                  <Box
-                    flex={false}
-                    pad="medium"
-                    margin="small"
-                    background={`dark-${(item % 3) + 1}`}
-                    border={{ color: 'brand', size: 'small' }}
-                    elevation="large"
-                    onClick={() => {
-                      setCurrentSong(item);
-                      
-                      //setRecommendedSongs(song_recommendations(currentSong.song_id));
-                    }}
-                  >
-                    <Text>{item.song_name}</Text>
-                  </Box>
-                </Fade>
-              )}
-            </InfiniteScroll>
-          </Box>
-          <Card height="medium" width="medium" background="light-4">
+        <Text size="large"> {' '}<b>Song Info</b></Text>
+          <Card height="xlarge" width="large" background="light-4">
             <CardHeader pad="medium">
-              <Text size="large"> Recommended Songs for {currentSong.song_name}:</Text>
+              <Text size="large"> {currentSong.song_name}:</Text>
             </CardHeader>
 
             <CardBody pad="medium">
@@ -212,6 +223,39 @@ export default function Recommendations() {
             </CardFooter>
           </Card>
         </Box>
+        <Box direction="row" fill={true} gap="small">
+        <Box>
+        <Text size="large"> {' '}<b>Recommended Songs</b></Text>
+          <Box
+            height="100%"
+            fill="horizontal"
+            overflow="auto"
+            background={{ color: 'neutral-2' }}
+          >
+            <InfiniteScroll items={recommendedSongs} step={5}>
+              {(item) => (
+                <Fade key={item.song_id}>
+                  <Box
+                    flex={false}
+                    pad="medium"
+                    margin="small"
+                    background={`dark-${(item % 3) + 1}`}
+                    border={{ color: 'brand', size: 'small' }}
+                    elevation="large"
+                    onClick={() => {
+                      setCurrentSong(item);
+                      
+                      //setRecommendedSongs(song_recommendations(currentSong.song_id));
+                    }}
+                  >
+                    <Text>{item.song_name}</Text>
+                  </Box>
+                </Fade>
+              )}
+            </InfiniteScroll>
+          </Box>
+        </Box>
+      </Box>
       </Box>
     </Box>
   );

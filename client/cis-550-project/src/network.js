@@ -66,7 +66,7 @@ async function songs_by_artist_1weekbillboard(ArtistName) {
 }
 
 async function song_recommendations(SongId) {
-  axios
+  return axios
     .get(serverAddress + '/song/recommended', { params: { SongId } })
     .then((response) => {
       console.log(response.data.results);
