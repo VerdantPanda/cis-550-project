@@ -40,17 +40,14 @@ export default function Artists() {
   // const [genres_data_list, setGenresDataList] = useState([]);
   const [artists, setArtists] = useState([]);
 
-
-  
-    const fechData = async () => {
-      console.log('useEffectCalled');
-      let lst = await search_artist_by_name(value);
-      console.log('TEMP DATA:');
-      console.log(lst);
-      setArtists(lst);
-    };
-    // fechData();
- 
+  const fechData = async () => {
+    console.log('useEffectCalled');
+    let lst = await search_artist_by_name(value);
+    console.log('TEMP DATA:');
+    console.log(lst);
+    setArtists(lst);
+  };
+  // fechData();
 
   const [currentArtist, setCurrentArtist] = useState('');
 
@@ -76,8 +73,10 @@ export default function Artists() {
     console.log(3);
     console.log(event.target.value);
     console.log(value);
-    fechData();
-  
+    // event.target.value
+    let lst = await search_artist_by_name(event.target.value);
+    setArtists(lst);
+    // fechData();
   };
 
   return (
@@ -137,8 +136,8 @@ export default function Artists() {
                 size="small"
                 textAlign="start"
                 margin={{ bottom: 'medium' }}
-              > 
-              Album
+              >
+                Album
                 {/* Album: {currentSong.album}
                 <br />
                 <br />
