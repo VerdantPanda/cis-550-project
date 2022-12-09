@@ -1,21 +1,15 @@
-//TODO: ibrahim finish this
-import { Fade, AttentionSeeker } from 'react-awesome-reveal';
+import { Zoom } from 'react-awesome-reveal';
 
 import {
   Box,
   TextInput,
   InfiniteScroll,
   Text,
-  TableRow,
-  TableBody,
-  Table,
-  TableHeader,
-  TableCell,
+  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Button,
   Spinner,
 } from 'grommet';
 
@@ -33,11 +27,10 @@ function millisToMinutesAndSeconds(millis) {
 }
 
 export default function Songs() {
-  // TODO: make call to server
   useEffect(() => {
     const fechData = async () => {
       console.log('useEffectCalled');
-      let temp = await search_song_by_name('Dogs');
+      let temp = await search_song_by_name('Apple');
       console.log('TEMP DATA:');
       console.log(temp);
       setSongDataList(temp);
@@ -47,7 +40,9 @@ export default function Songs() {
   }, []);
 
   const [value, setValue] = useState('');
+
   const [song_data_list, setSongDataList] = useState([]);
+
   const [songs, setSongs] = useState([]);
 
   const [currentSong, setCurrentSong] = useState({
@@ -72,7 +67,7 @@ export default function Songs() {
     }
   };
 
-  return !song_data_list ? (
+  return song_data_list.length === 0 ? (
     <Box
       fill
       align="center"
@@ -92,13 +87,46 @@ export default function Songs() {
       gap="medium"
       animation="fadeIn"
     >
-      <Box width="medium" fill="horizontal">
+      <Text size="xlarge" textAlign="start" weight="lighter">
+        Type in the name of a song and click it to retrieve relevant
+        information.<br></br>If nothing immediately shows up, click the{' '}
+        <b>Query</b> button to do a deep search of our database.
+      </Text>
+      <Box width="medium" fill="horizontal" direction="row-reverse">
         <TextInput
           id="grommet-text-combobox-default-suggestion"
           value={value}
           onChange={onChange}
           placeholder="Enter the name of a song"
         />
+        <Box pad={{ horizontal: 'small' }}>
+          <Button
+            size="large"
+            primary
+            label="Query"
+            onClick={async (e) => {
+              console.log('Query button clicked');
+              let temp = await search_song_by_name(value);
+              console.log('TEMP DATA:');
+              console.log(temp);
+
+              if (temp.length === 0) {
+                temp = [
+                  {
+                    song_name: 'Song Not Found',
+                    song_id: 0,
+                    album: '',
+                    explicit: 0,
+                    duration_ms: 0,
+                    song_year: 0,
+                  },
+                ];
+              }
+              setSongDataList(temp);
+              setSongs(temp);
+            }}
+          ></Button>
+        </Box>
       </Box>
       <Box direction="row" fill={true} gap="small">
         <Box
@@ -109,7 +137,7 @@ export default function Songs() {
         >
           <InfiniteScroll items={songs} step={5}>
             {(item) => (
-              <Fade key={item.song_id}>
+              <Zoom key={item.song_id} duration={500}>
                 <Box
                   flex={false}
                   pad="medium"
@@ -123,7 +151,7 @@ export default function Songs() {
                 >
                   <Text>{item.song_name}</Text>
                 </Box>
-              </Fade>
+              </Zoom>
             )}
           </InfiniteScroll>
         </Box>

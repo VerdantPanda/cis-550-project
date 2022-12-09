@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
+app.get('/artist/search', artistRoutes.search_artist_by_name);
 app.get('/artist/genres', artistRoutes.artist_genres);
 
 app.get('/artist/recommended', artistRoutes.recommended_artists);
@@ -39,3 +39,11 @@ app.get('/trivia1', triviaRoutes.trivia_question_1);
 app.get('/trivia2', triviaRoutes.trivia_question_2);
 
 app.get('/trivia3', triviaRoutes.trivia_question_3);
+
+app.get('/triviaquestion', triviaRoutes.trivia_question);
+
+app.get('/triviainfo', triviaRoutes.trivia_info);
+
+app.get('/triviaanswers', triviaRoutes.trivia_answers);
+
+
