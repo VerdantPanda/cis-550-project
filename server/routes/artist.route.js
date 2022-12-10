@@ -104,7 +104,7 @@ async function recommended_artists(req, res) {
             where a.artist_name = \'${ArtistName}\'
             group by a.artist_name
             )
-        select a.artist_name as recommended_artists
+        select s.song_id, a.artist_name as recommended_artists
         from Song_artist a join Song s on s.song_id = a.song_id
         where a.artist_name <> (select artist_name from attributes)
         group by a.artist_name
