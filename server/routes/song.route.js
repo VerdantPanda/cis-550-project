@@ -124,7 +124,7 @@ async function songs_by_artist_1weekbillboard(req, res) {
 
 //Route: Get recommendations based on a given song title.
 async function song_recommendations(req, res) {
-  const SongId = req.query.SongId ? req.query.SongId : '';
+  const SongId = req.query.SongId ? req.query.SongId : 1;
   connection.query(
     `WITH attributes as
         (select s.song_name,
@@ -141,7 +141,7 @@ async function song_recommendations(req, res) {
         from Song s
         where s.song_id = ${SongId}
           )
-      select s.song_id, s.song_name
+      select s.song_id, s.song_name, s.album, s.explicit, s.duration_ms, s.song_year
       from Song s
       where s.song_id <> (select song_id from attributes)
       and s.danceability between (select artist_danceability-0.2 from attributes) and

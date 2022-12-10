@@ -90,7 +90,7 @@ export default function Songs() {
       <Text size="xlarge" textAlign="start" weight="lighter">
         Type in the name of a song and click it to retrieve relevant
         information.<br></br>If nothing immediately shows up, click the{' '}
-        <b>Query</b> button to do a deep search of our database.
+        <b>Search</b> button to do a deep search of our database.
       </Text>
       <Box width="medium" fill="horizontal" direction="row-reverse">
         <TextInput
@@ -103,7 +103,7 @@ export default function Songs() {
           <Button
             size="large"
             primary
-            label="Query"
+            label="Search"
             onClick={async (e) => {
               console.log('Query button clicked');
               let temp = await search_song_by_name(value);
