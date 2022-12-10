@@ -22,7 +22,7 @@ import {
   Spinner,
 } from 'grommet';
 
-import { search_artist_by_name } from '../network.js';
+import { search_artist_by_name, artist_genres, recommended_artists } from '../network.js';
 
 import { Favorite, ShareOption } from 'grommet-icons';
 
@@ -59,24 +59,10 @@ export default function Artists() {
   });
 
   const onChange = async (event) => {
-    // useEffect(() => { });
-    if (event.target.value.length > 0) {
-      setValue(event.target.value);
-      console.log(value);
-      console.log(1);
-      console.log(event.target.value);
-    } else {
-      setValue('');
-      console.log(value);
-      console.log(2);
-    }
-    console.log(3);
-    console.log(event.target.value);
-    console.log(value);
-    // event.target.value
+
+    setValue(event.target.value);
     let lst = await search_artist_by_name(event.target.value);
     setArtists(lst);
-    // fechData();
   };
 
   return (
@@ -113,10 +99,20 @@ export default function Artists() {
                   background={`dark-${(item % 3) + 1}`}
                   border={{ color: 'brand', size: 'small' }}
                   elevation="large"
-                  onClick={() => {
-                    setCurrentArtist(item);
-                    setCurrentGenres(item);
-                    setCurrentRecommendation(item);
+                  onClick={ async () => {
+                    setCurrentArtist(item.artist_name);
+                    let recmd = recommended_artists(item.artist_name);
+                    let genre = artist_genres(item.artist_name);
+                    if (recmd) {
+                      setCurrentRecommendation(recmd);
+                    }
+                    if (genre) {
+                      setCurrentGenres(genre);
+                    }
+                    console.log(item.artist_name);
+                    console.log(currentArtist);
+                    console.log(currentGenres);
+                    console.log(currentRecommendation);
                   }}
                 >
                   <Text>{item.artist_name}</Text>
@@ -137,17 +133,9 @@ export default function Artists() {
                 textAlign="start"
                 margin={{ bottom: 'medium' }}
               >
-                Album
-                {/* Album: {currentSong.album}
-                <br />
-                <br />
-                Year: {currentSong.song_year}
-                <br />
-                <br />
-                {millisToMinutesAndSeconds(currentSong.duration_ms)}
-                <br />
-                <br />
-                {currentSong.explicit ? 'Explicit' : null} */}
+                {currentGenres.artist_genres}
+                {currentRecommendation.recommended_artists}
+                
               </Text>
             </CardBody>
             <CardFooter pad={{ horizontal: 'small' }} background="light-2">
