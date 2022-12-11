@@ -102,12 +102,12 @@ async function songs_by_artist_1weekbillboard(req, res) {
 
   connection.query(
     `
-        select distinct s.song_name, s.song_id, max(b.peak_rank) as peak_rank
+        select distinct s.song_name, s.song_id, max(b.peak_rank) as peak_rank, s.album, s.explicit, s.duration_ms, s.song_year
         from Billboard b
         left join Song s on b.song_id = s.song_id
         where b.song_id in (
             select song_id from Song_artist
-            where artist_name = '%${ArtistName}%'
+            where artist_name = '${ArtistName}'
             )
         group by s.song_name
         order by peak_rank`,
