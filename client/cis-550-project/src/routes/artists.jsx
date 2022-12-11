@@ -20,64 +20,52 @@ import {
   CardHeader,
   Button,
   Spinner,
+  List,
 } from 'grommet';
 
-import { search_artist_by_name } from '../network.js';
+import {
+  search_artist_by_name,
+  artist_genres,
+  recommended_artists,
+} from '../network.js';
 
 import { Favorite, ShareOption } from 'grommet-icons';
 
 import { useState, useEffect } from 'react';
 
-function millisToMinutesAndSeconds(millis) {
-  var minutes = Math.floor(millis / 60000);
-  var seconds = ((millis % 60000) / 1000).toFixed(0);
-  // return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-  return minutes + ' minutes and ' + seconds + ' seconds';
-}
-
 export default function Artists() {
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('useEffectCalled');
+      let lst = await search_artist_by_name(value);
+      console.log('search_artist_by_name()');
+      // console.log(lst);
+      setArtists(lst);
+    };
+    fetchData();
+  }, []);
+
   const [value, setValue] = useState('');
   // const [genres_data_list, setGenresDataList] = useState([]);
   const [artists, setArtists] = useState([]);
 
-
-  
-    const fechData = async () => {
-      console.log('useEffectCalled');
-      let lst = await search_artist_by_name(value);
-      console.log('TEMP DATA:');
-      console.log(lst);
-      setArtists(lst);
-    };
-    // fechData();
- 
-
   const [currentArtist, setCurrentArtist] = useState('');
 
-  const [currentGenres, setCurrentGenres] = useState({
-    artist_genres: [],
-  });
-  const [currentRecommendation, setCurrentRecommendation] = useState({
-    recommended_artists: [],
-  });
+  const [currentGenres, setCurrentGenres] = useState([
+    { artist_genres: 'artist_generes_default' },
+  ]);
+
+  const [currentRecommendation, setCurrentRecommendation] = useState([
+    {
+      song_id: 0,
+      recommended_artists: 'recommended_artists_temp',
+    },
+  ]);
 
   const onChange = async (event) => {
-    // useEffect(() => { });
-    if (event.target.value.length > 0) {
-      setValue(event.target.value);
-      console.log(value);
-      console.log(1);
-      console.log(event.target.value);
-    } else {
-      setValue('');
-      console.log(value);
-      console.log(2);
-    }
-    console.log(3);
-    console.log(event.target.value);
-    console.log(value);
-    fechData();
-  
+    setValue(event.target.value);
+    let lst = await search_artist_by_name(event.target.value);
+    setArtists(lst);
   };
 
   return (
@@ -114,10 +102,30 @@ export default function Artists() {
                   background={`dark-${(item % 3) + 1}`}
                   border={{ color: 'brand', size: 'small' }}
                   elevation="large"
-                  onClick={() => {
-                    setCurrentArtist(item);
-                    setCurrentGenres(item);
-                    setCurrentRecommendation(item);
+                  onClick={async () => {
+                    setCurrentGenres([{ artist_genres: 'Loading...' }]);
+                    setCurrentRecommendation([
+                      {
+                        song_id: 0,
+                        recommended_artists: 'Loading...',
+                      },
+                    ]);
+
+                    setCurrentArtist(item.artist_name);
+
+                    let recmd = await recommended_artists(item.artist_name);
+                    let genre = await artist_genres(item.artist_name);
+
+                    if (recmd) {
+                      setCurrentRecommendation(recmd);
+                    }
+                    if (genre) {
+                      setCurrentGenres(genre);
+                    }
+                    // console.log(item.artist_name);
+                    console.log(currentArtist);
+                    console.log(currentGenres);
+                    console.log(currentRecommendation);
                   }}
                 >
                   <Text>{item.artist_name}</Text>
@@ -133,23 +141,19 @@ export default function Artists() {
             </CardHeader>
 
             <CardBody pad="medium">
-              <Text
-                size="small"
-                textAlign="start"
-                margin={{ bottom: 'medium' }}
-              > 
-              Album
-                {/* Album: {currentSong.album}
-                <br />
-                <br />
-                Year: {currentSong.song_year}
-                <br />
-                <br />
-                {millisToMinutesAndSeconds(currentSong.duration_ms)}
-                <br />
-                <br />
-                {currentSong.explicit ? 'Explicit' : null} */}
-              </Text>
+              {/* <List primaryKey="artist_genres" data={currentGenres} />
+               */}
+              <b>Genres:</b>{' '}
+              {currentGenres.map((elem) => elem.artist_genres).join(', ')}
+              {/* <List
+                primaryKey="recommended_artists"
+                data={currentRecommendation}
+              /> */}
+              <br></br>
+              <b>Recommendations:</b>{' '}
+              {currentRecommendation
+                .map((elem) => elem.recommended_artists)
+                .join(', ')}
             </CardBody>
             <CardFooter pad={{ horizontal: 'small' }} background="light-2">
               <Button icon={<Favorite color="red" />} hoverIndicator />

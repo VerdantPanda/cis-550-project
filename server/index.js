@@ -8,9 +8,11 @@ const songRoutes = require('./routes/song.route');
 const triviaRoutes = require('./routes/trivia.route');
 const userRoutes = require('./routes/user.route');
 
-app.use(cors({
-  origin: '*'
-}));
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -19,7 +21,9 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
 app.get('/artist/search', artistRoutes.search_artist_by_name);
+
 app.get('/artist/genres', artistRoutes.artist_genres);
 
 app.get('/artist/recommended', artistRoutes.recommended_artists);

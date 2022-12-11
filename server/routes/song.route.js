@@ -53,38 +53,38 @@ async function song_info(req, res) {
 
   connection.query(
     `SELECT song_name, album, song_year, track_number, disc_number, explicit,
-        danceability, energy, music_key, loudness,
-        speechiness, acousticness, instrumentalness,
-        liveness, valence, tempo, duration_ms,
-        CASE
-            WHEN music_key = 0 THEN 'C'
-            WHEN music_key = 1 THEN 'C#'
-            WHEN music_key = 2 THEN 'D'
-            WHEN music_key = 3 THEN 'D#'
-            WHEN music_key = 4 THEN 'E'
-            WHEN music_key = 5 THEN 'F'
-            WHEN music_key = 6 THEN 'F#'
-            WHEN music_key = 7 THEN 'G'
-            WHEN music_key = 8 THEN 'G#'
-            WHEN music_key = 9 THEN 'A'
-            WHEN music_key = 10 THEN 'A#'
-            WHEN music_key = 11 THEN 'B'
-            ELSE 'Not determined'
-        END as music_key,
-        CONCAT(CAST(time_signature as char),'/4') as time_signature,
-        (SELECT
-            GROUP_CONCAT(artist_name ORDER BY artist_name ASC
-            SEPARATOR ', ')
-            FROM Song_artist sa
-            WHERE sa.song_id = ${SongId}
-            GROUP BY sa.song_id) as artist_name,
-        (SELECT
-            Count(*)
-            FROM Billboard b
-            WHERE b.song_id = ${SongId}
-            GROUP BY b.song_id) as weeks_on_billboard
-        FROM Song s
-        WHERE s.song_id = ${SongId}`,
+               danceability, energy, music_key, loudness,
+               speechiness, acousticness, instrumentalness,
+               liveness, valence, tempo, duration_ms,
+               CASE
+	                WHEN music_key = 0 THEN 'C'
+	                WHEN music_key = 1 THEN 'C#'
+	                WHEN music_key = 2 THEN 'D'
+	                WHEN music_key = 3 THEN 'D#'
+	                WHEN music_key = 4 THEN 'E'
+	                WHEN music_key = 5 THEN 'F'
+	                WHEN music_key = 6 THEN 'F#'
+	                WHEN music_key = 7 THEN 'G'
+	                WHEN music_key = 8 THEN 'G#'
+	                WHEN music_key = 9 THEN 'A'
+	                WHEN music_key = 10 THEN 'A#'
+	                WHEN music_key = 11 THEN 'B'
+	                ELSE 'Not determined'
+                END as music_key,
+                CONCAT(CAST(time_signature as char),'/4') as time_signature,
+                (SELECT
+                    GROUP_CONCAT(artist_name ORDER BY artist_name ASC
+                    SEPARATOR ', ')
+                    FROM Song_artist sa
+                    WHERE sa.song_id = ${SongId}
+                    GROUP BY sa.song_id) as artist_name,
+                (SELECT
+                    Count(*)
+                    FROM Billboard b
+                    WHERE b.song_id = ${SongId}
+                    GROUP BY b.song_id) as weeks_on_billboard
+      FROM Song s
+      WHERE s.song_id = ${SongId};`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
@@ -102,12 +102,12 @@ async function songs_by_artist_1weekbillboard(req, res) {
 
   connection.query(
     `
-        select distinct s.song_name, max(b.peak_rank) as peak_rank
+        select distinct s.song_name, s.song_id, max(b.peak_rank) as peak_rank, s.album, s.explicit, s.duration_ms, s.song_year
         from Billboard b
         left join Song s on b.song_id = s.song_id
         where b.song_id in (
             select song_id from Song_artist
-            where artist_name = '%${ArtistName}%'
+            where artist_name = '${ArtistName}'
             )
         group by s.song_name
         order by peak_rank`,
@@ -124,7 +124,7 @@ async function songs_by_artist_1weekbillboard(req, res) {
 
 //Route: Get recommendations based on a given song title.
 async function song_recommendations(req, res) {
-  const SongId = req.query.SongId ? req.query.SongId : '';
+  const SongId = req.query.SongId ? req.query.SongId : 1;
   connection.query(
     `WITH attributes as
         (select s.song_name,
@@ -141,7 +141,7 @@ async function song_recommendations(req, res) {
         from Song s
         where s.song_id = ${SongId}
           )
-      select s.song_id, s.song_name
+      select s.song_id, s.song_name, s.album, s.explicit, s.duration_ms, s.song_year
       from Song s
       where s.song_id <> (select song_id from attributes)
       and s.danceability between (select artist_danceability-0.2 from attributes) and
