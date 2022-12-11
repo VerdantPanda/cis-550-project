@@ -5,21 +5,8 @@
 import {
   Box,
   Button,
-  TextInput,
-  InfiniteScroll,
   Text,
-  TableRow,
-  TableBody,
-  Table,
-  TableHeader,
-  TableCell,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Paragraph,
-  RadioButtonGroup,
-  Spinner,
+  RadioButtonGroup
 } from 'grommet';
 
 import { trivia_question, trivia_info } from '../network.js';

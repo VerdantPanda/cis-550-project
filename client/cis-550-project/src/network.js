@@ -72,24 +72,6 @@ async function song_recommendations(SongId) {
     });
 }
 
-async function trivia_question_1() {
-  return axios.get(serverAddress + '/trivia1', {}).then((response) => {
-    return response.data.results;
-  });
-}
-
-async function trivia_question_2() {
-  return axios.get(serverAddress + '/trivia2', {}).then((response) => {
-    return response.data.results;
-  });
-}
-
-async function trivia_question_3() {
-  return axios.get(serverAddress + '/trivia3', {}).then((response) => {
-    return response.data.results;
-  });
-}
-
 async function trivia_question(QuestionId) {
   return axios
     .get(serverAddress + '/triviaquestion', { params: { QuestionId } })
@@ -104,16 +86,6 @@ async function trivia_info(QuestionId) {
       return response.data.results;
     });
 }
-
-/*
-async function trivia_answers(QuestionId) {
-  return axios
-    .get(serverAddress + '/triviaanswers', { params: { QuestionId } })
-    .then((response) => {
-      return response.data.results;
-    });
-}
-*/
 
 async function trivia_answers_1(QuestionId) {
   return axios
@@ -206,9 +178,6 @@ export {
   song_info,
   songs_by_artist_1weekbillboard,
   song_recommendations,
-  trivia_question_1,
-  trivia_question_2,
-  trivia_question_3,
   trivia_question,
   trivia_info,
   trivia_answers_1,
