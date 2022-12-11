@@ -34,16 +34,16 @@ import { Favorite, ShareOption } from 'grommet-icons';
 import { useState, useEffect } from 'react';
 
 export default function Artists() {
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log('useEffectCalled');
-      let lst = await search_artist_by_name(value);
-      console.log('search_artist_by_name()');
-      // console.log(lst);
-      setArtists(lst);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     console.log('useEffectCalled');
+  //     let lst = await search_artist_by_name(value);
+  //     console.log('search_artist_by_name()');
+  //     // console.log(lst);
+  //     setArtists(lst);
+  //   };
+  //   fetchData();
+  // }, []);
 
   const [value, setValue] = useState('');
   // const [genres_data_list, setGenresDataList] = useState([]);
@@ -52,14 +52,11 @@ export default function Artists() {
   const [currentArtist, setCurrentArtist] = useState('');
 
   const [currentGenres, setCurrentGenres] = useState([
-    { artist_genres: 'artist_generes_default' },
+    
   ]);
 
   const [currentRecommendation, setCurrentRecommendation] = useState([
-    {
-      song_id: 0,
-      recommended_artists: 'recommended_artists_temp',
-    },
+    
   ]);
 
   const onChange = async (event) => {
@@ -77,6 +74,10 @@ export default function Artists() {
       gap="medium"
       animation="fadeIn"
     >
+      <Text size="xlarge" textAlign="start" weight="lighter">
+        Type in the name of an artist and click it to retrieve relevant
+        information.
+      </Text>
       <Box width="medium" fill="horizontal">
         <TextInput
           id="grommet-text-combobox-default-suggestion"
@@ -135,25 +136,24 @@ export default function Artists() {
           </InfiniteScroll>
         </Box>
         <Box>
-          <Card height="medium" width="medium" background="light-4">
+        <Text size="large"> {' '}<b>Artist Info</b></Text>
+          <Card height="xlarge" width="large" background="light-4">
             <CardHeader pad="medium">
               <Text size="large">{currentArtist}</Text>
             </CardHeader>
 
             <CardBody pad="medium">
-              {/* <List primaryKey="artist_genres" data={currentGenres} />
-               */}
-              <b>Genres:</b>{' '}
-              {currentGenres.map((elem) => elem.artist_genres).join(', ')}
-              {/* <List
-                primaryKey="recommended_artists"
-                data={currentRecommendation}
-              /> */}
-              <br></br>
-              <b>Recommendations:</b>{' '}
-              {currentRecommendation
-                .map((elem) => elem.recommended_artists)
-                .join(', ')}
+              <Text
+                size="medium"
+                textAlign="start"
+                margin={{ bottom: 'medium' }}
+              >
+                {/* <List primaryKey="artist_genres" data={currentGenres} />
+                */}
+                <b>Genres:</b>{' '}
+                <br></br>
+                {currentGenres.map((elem) => <li>{elem.artist_genres}</li>, <br></br>)}
+              </Text>
             </CardBody>
             <CardFooter pad={{ horizontal: 'small' }} background="light-2">
               <Button icon={<Favorite color="red" />} hoverIndicator />
@@ -161,6 +161,34 @@ export default function Artists() {
             </CardFooter>
           </Card>
         </Box>
+        <Box direction="row" fill={true} gap="small">
+        <Box>
+        <Text size="large"> {' '}<b>Recommended Artists</b></Text>
+          <Box
+            height="100%"
+            fill="horizontal"
+            overflow="auto"
+            background={{ color: 'neutral-2' }}
+          >
+            <InfiniteScroll items={currentRecommendation} step={5}>
+              {(item) => (
+                <Fade>
+                  <Box
+                    flex={false}
+                    pad="medium"
+                    margin="small"
+                    background={`dark-${(item % 3) + 1}`}
+                    border={{ color: 'brand', size: 'small' }}
+                    elevation="large"
+                  >
+                    <Text>{item.recommended_artists}</Text>
+                  </Box>
+                </Fade>
+              )}
+            </InfiniteScroll>
+          </Box>
+        </Box>
+      </Box>
       </Box>
     </Box>
   );
