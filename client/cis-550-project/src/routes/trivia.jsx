@@ -2,7 +2,6 @@
 // https://v2.grommet.io/components
 // Also see songs.jsx
 
-
 import {
   Box,
   Button,
@@ -23,13 +22,20 @@ import {
   Spinner,
 } from 'grommet';
 
-import { trivia_question_1, trivia_question_2, trivia_question_3 } from '../network.js';
+import { trivia_question, trivia_info } from '../network.js';
 
-import { trivia_question, trivia_info, trivia_answers } from '../network.js';
+import { trivia_answers_1, trivia_answers_2, trivia_answers_3, trivia_answers_4 } from '../network.js';
+
+import { trivia_answers_5, trivia_answers_6, trivia_answers_7, trivia_answers_8 } from '../network.js';
+
+import { trivia_answers_9, trivia_answers_10 } from '../network.js';
 
 import { React, useState, useEffect } from 'react';
 
-
+var answer_functions = [
+  trivia_answers_1, trivia_answers_2, trivia_answers_3, trivia_answers_4, trivia_answers_5,
+  trivia_answers_6, trivia_answers_7, trivia_answers_8, trivia_answers_9, trivia_answers_10
+]
 
 export default function Trivia() {
   const [value, setValue] = useState('');
@@ -41,7 +47,6 @@ export default function Trivia() {
   const [feedback, setFeedback] = useState('')
   const [trivia_correct_answer, setTriviaCorrectAnswer] = useState([]);
   const [num, setNum] = useState(1);
-
 
   useEffect(() => {
     const fechData = async () => {
@@ -57,7 +62,7 @@ export default function Trivia() {
       setTriviaInfo(temp2);
       console.log(temp2);
 
-      let temp3 = await trivia_question_1();
+      let temp3 = await answer_functions[num-1]();
       console.log('TEMP3 DATA:');
       setTriviaAnswerList(temp3);
       console.log(temp3);   
@@ -105,7 +110,7 @@ export default function Trivia() {
       </Text>
       <br></br><br></br> 
 
-      <Box height="xsmall" flex="false"> 
+      <Box height="xsmall" flex={false}> 
         <Text textAlign="start" margin={{right: "xlarge"}}> 
           <i>{trivia_i.map(item => item.question_info)}</i>
         </Text>
@@ -114,10 +119,18 @@ export default function Trivia() {
       <br></br><br></br>
       <Box size="small">
         <Button alignSelf="center" active size="medium" label="Next" onClick={async () => {setNum(((num+1)%11)||1); 
+          setTriviaAnswerList(['','','','']);
+          setTriviaQuestion([]);
+          setFeedback('');
           let temp1 = await trivia_question(num);
           setTriviaQuestion(temp1);
           let temp2 = await trivia_info(num);
-          setTriviaInfo(temp2)}} >
+          setTriviaInfo(temp2);
+          let temp3 = await answer_functions[num-1]();
+          setTriviaAnswerList(temp3);
+          setValue('');
+          setTriviaCorrectAnswer(temp3.filter(c => isCorrect(c.answer_choice)));
+          setFeedback('')}}>
         </Button>
       </Box>
 

@@ -34,16 +34,26 @@ app.get('/song/1weekbillboard', songRoutes.songs_by_artist_1weekbillboard);
 
 app.get('/song/recommended', songRoutes.song_recommendations);
 
-app.get('/trivia1', triviaRoutes.trivia_question_1);
-
-app.get('/trivia2', triviaRoutes.trivia_question_2);
-
-app.get('/trivia3', triviaRoutes.trivia_question_3);
-
 app.get('/triviaquestion', triviaRoutes.trivia_question);
 
 app.get('/triviainfo', triviaRoutes.trivia_info);
 
-app.get('/triviaanswers', triviaRoutes.trivia_answers);
+app.get('/triviaanswers_1', triviaRoutes.trivia_answers_1);
 
+app.get('/triviaanswers_2', triviaRoutes.trivia_answers_2);
 
+app.get('/triviaanswers_3', triviaRoutes.trivia_answers_3);
+
+app.get('/triviaanswers_4', triviaRoutes.trivia_answers_4);
+
+app.get('/triviaanswers_5', triviaRoutes.trivia_answers_5);
+
+app.get('/triviaanswers_6', triviaRoutes.trivia_answers_6);
+
+app.get('/triviaanswers_7', triviaRoutes.trivia_answers_7);
+
+app.get('/triviaanswers_8', triviaRoutes.trivia_answers_8);
+
+app.get('/triviaanswers_9', triviaRoutes.trivia_answers_9);
+
+app.get('/triviaanswers_10', triviaRoutes.trivia_answers_10);

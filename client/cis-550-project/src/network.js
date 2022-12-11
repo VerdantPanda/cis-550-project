@@ -108,6 +108,7 @@ return axios
 });
 }
 
+/*
 async function trivia_answers(QuestionId) {
 return axios
   .get(serverAddress + '/triviaanswers', {params: { QuestionId }})
@@ -115,6 +116,89 @@ return axios
     return response.data.results;
 });
 }
+*/
+
+async function trivia_answers_1(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_1', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_2(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_2', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_3(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_3', {params: { QuestionId }})
+    .then((response) => {
+       return response.data.results;
+  });
+  }
+  
+async function trivia_answers_4(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_4', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+  
+async function trivia_answers_5(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_5', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_6(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_6', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_7(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_7', {params: { QuestionId }})
+    .then((response) => {
+       return response.data.results;
+  });
+  }
+  
+async function trivia_answers_8(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_8', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+
+async function trivia_answers_9(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_9', {params: { QuestionId }})
+    .then((response) => {
+        return response.data.results;
+  });
+  }
+    
+async function trivia_answers_10(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_10', {params: { QuestionId }})
+    .then((response) => {
+       return response.data.results;
+  });
+  }
 
 export {
   artist_genres,
@@ -130,5 +214,14 @@ export {
   trivia_question_3,
   trivia_question,
   trivia_info,
-  trivia_answers
+  trivia_answers_1,
+  trivia_answers_2,
+  trivia_answers_3,
+  trivia_answers_4,
+  trivia_answers_5,
+  trivia_answers_6,
+  trivia_answers_7,
+  trivia_answers_8,
+  trivia_answers_9,
+  trivia_answers_10
 };
