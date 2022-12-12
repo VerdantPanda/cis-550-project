@@ -1,5 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
+const apicache = require('apicache');
+const redis = require('redis');
+
 const app = express();
 const port = 3001;
 
@@ -7,6 +11,17 @@ const artistRoutes = require('./routes/artist.route');
 const songRoutes = require('./routes/song.route');
 const triviaRoutes = require('./routes/trivia.route');
 const userRoutes = require('./routes/user.route');
+
+app.use(morgan('dev'));
+
+//configure apicache
+let cache = apicache.middleware;
+let cacheWithRedis = apicache.options({ redisClient: redis.createClient() }).middleware;
+
+
+//caching all routes for 5 minutes
+// app.use(cache('5 minutes'));
+app.use(cacheWithRedis('5 minutes'));
 
 app.use(
   cors({

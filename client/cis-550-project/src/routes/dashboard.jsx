@@ -60,7 +60,39 @@ export default function Dashboard() {
         return ret;
       });
 
-      const data = [].concat(temp_1, temp_2, temp_3, temp_4);
+      let temp_5 = await songs_by_artist_1weekbillboard('Ed Sheeran');
+      temp_5 = temp_5.map((elem) => {
+        let ret = elem;
+        ret.artist = 'Ed Sheeran';
+        ret.time = millisToMinutesAndSeconds(ret.duration_ms);
+        return ret;
+      });
+
+      let temp_6 = await songs_by_artist_1weekbillboard('BTS');
+      temp_6 = temp_6.map((elem) => {
+        let ret = elem;
+        ret.artist = 'BTS';
+        ret.time = millisToMinutesAndSeconds(ret.duration_ms);
+        return ret;
+      });
+
+      let temp_7 = await songs_by_artist_1weekbillboard('Adele');
+      temp_7 = temp_7.map((elem) => {
+        let ret = elem;
+        ret.artist = 'Adele';
+        ret.time = millisToMinutesAndSeconds(ret.duration_ms);
+        return ret;
+      });
+
+      const data = [].concat(
+        temp_1,
+        temp_2,
+        temp_3,
+        temp_4,
+        temp_5,
+        temp_6,
+        temp_7
+      );
 
       setSongs(data);
     };
