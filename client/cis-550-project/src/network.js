@@ -72,24 +72,6 @@ async function song_recommendations(SongId) {
     });
 }
 
-async function trivia_question_1() {
-  return axios.get(serverAddress + '/trivia1', {}).then((response) => {
-    return response.data.results;
-  });
-}
-
-async function trivia_question_2() {
-  return axios.get(serverAddress + '/trivia2', {}).then((response) => {
-    return response.data.results;
-  });
-}
-
-async function trivia_question_3() {
-  return axios.get(serverAddress + '/trivia3', {}).then((response) => {
-    return response.data.results;
-  });
-}
-
 async function trivia_question(QuestionId) {
   return axios
     .get(serverAddress + '/triviaquestion', { params: { QuestionId } })
@@ -105,13 +87,87 @@ async function trivia_info(QuestionId) {
     });
 }
 
-async function trivia_answers(QuestionId) {
+async function trivia_answers_1(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers', { params: { QuestionId } })
+    .get(serverAddress + '/triviaanswers_1', {params: { QuestionId }})
     .then((response) => {
       return response.data.results;
-    });
-}
+  });
+  }
+
+async function trivia_answers_2(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_2', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_3(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_3', {params: { QuestionId }})
+    .then((response) => {
+       return response.data.results;
+  });
+  }
+  
+async function trivia_answers_4(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_4', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+  
+async function trivia_answers_5(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_5', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_6(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_6', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+async function trivia_answers_7(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_7', {params: { QuestionId }})
+    .then((response) => {
+       return response.data.results;
+  });
+  }
+  
+async function trivia_answers_8(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_8', {params: { QuestionId }})
+    .then((response) => {
+      return response.data.results;
+  });
+  }
+
+
+async function trivia_answers_9(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_9', {params: { QuestionId }})
+    .then((response) => {
+        return response.data.results;
+  });
+  }
+    
+async function trivia_answers_10(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_10', {params: { QuestionId }})
+    .then((response) => {
+       return response.data.results;
+  });
+  }
 
 export {
   artist_genres,
@@ -122,10 +178,16 @@ export {
   song_info,
   songs_by_artist_1weekbillboard,
   song_recommendations,
-  trivia_question_1,
-  trivia_question_2,
-  trivia_question_3,
   trivia_question,
   trivia_info,
-  trivia_answers,
+  trivia_answers_1,
+  trivia_answers_2,
+  trivia_answers_3,
+  trivia_answers_4,
+  trivia_answers_5,
+  trivia_answers_6,
+  trivia_answers_7,
+  trivia_answers_8,
+  trivia_answers_9,
+  trivia_answers_10
 };
