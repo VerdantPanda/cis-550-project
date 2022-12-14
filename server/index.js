@@ -25,12 +25,12 @@ app.use(
 const uri = process.env.ATLAS_URI;
 
 mongoose.set('strictQuery', false);
-
+/*
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
+*/
 const { connection } = mongoose;
 connection.once('open', () => {
   console.log('MongoDB database connection established successfully');
