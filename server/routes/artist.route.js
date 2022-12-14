@@ -90,46 +90,59 @@ async function recommended_artists(req, res) {
 
   connection.query(
     `WITH attributes as
-            (select a.artist_name,
-            avg(s.danceability) as artist_danceability,
-            avg(s.energy) as artist_energy,
-            avg(s.loudness) as artist_loudness,
-            avg(s.speechiness) as artist_speechiness,
-            avg(s.acousticness) as artist_acousticness,
-            avg(s.instrumentalness) as artist_instrumentallness,
-            avg(s.liveness) as artist_liveness,
-            avg(s.valence) as artist_valence,
-            avg(s.tempo) as artist_tempo
-            from Song s join Song_artist a on s.song_id = a.song_id
-            where a.artist_name = \'${ArtistName}\'
-            group by a.artist_name
-            )
-        select s.song_id, a.artist_name as recommended_artists
-        from Song_artist a join Song s on s.song_id = a.song_id
-        where a.artist_name <> (select artist_name from attributes)
-        group by a.artist_name
-        having avg(s.danceability) between (select artist_danceability-0.2 from attributes)
-        and
-                (select artist_danceability+0.2 from attributes)
-        and avg(s.energy) between (select artist_energy-0.2 from attributes) and
-                (select artist_energy+0.2 from attributes)
-        and avg(s.loudness) between (select artist_loudness-0.4 from attributes) and
-                (select artist_loudness+0.4 from attributes)
-        and avg(s.speechiness) between (select artist_speechiness-0.2 from attributes)
-        and
-                (select artist_speechiness+0.2 from attributes)
-        and avg(s.acousticness) between (select artist_acousticness-0.2 from attributes)
-        and
-                (select artist_acousticness+0.2 from attributes)
-        and avg(s.instrumentalness) between (select artist_instrumentallness-0.2 from
-        attributes) and
-                (select artist_instrumentallness+0.2 from attributes)
-        and avg(s.liveness) between (select artist_liveness-0.2 from attributes) and
-                (select artist_liveness+0.2 from attributes)
-        and avg(s.valence) between (select artist_valence-0.2 from attributes) and
-                (select artist_valence+0.2 from attributes)
-        and avg(s.tempo) between (select artist_tempo-10 from attributes) and
-                (select artist_tempo+10 from attributes)`,
+    (Select a.artist_name,
+    avg(s.danceability) as artist_danceability,
+    avg(s.energy) as artist_energy,
+    avg(s.loudness) as artist_loudness,
+    avg(s.speechiness) as artist_speechiness,
+    avg(s.acousticness) as artist_acousticness,
+    avg(s.instrumentalness) as artist_instrumentalness,
+    avg(s.liveness) as artist_liveness,
+    avg(s.valence) as artist_valence,
+    avg(s.tempo) as artist_tempo
+    From Song s Join Song_artist a on s.song_id = a.song_id
+    Where a.artist_name = 'Madonna'
+    Group by a.artist_name
+    )
+Select s.song_id, a.artist_name as recommended_artists
+from Song_artist a join Song s on s.song_id = a.song_id
+where a.artist_name <> (select artist_name from attributes)
+group by a.artist_name
+having avg(s.danceability) between (select artist_danceability-0.2 from attributes)
+and
+        (select artist_danceability+0.2 from attributes)
+and avg(s.energy) between (select artist_energy-0.2 from attributes) and
+        (select artist_energy+0.2 from attributes)
+and avg(s.loudness) between (select artist_loudness-0.4 from attributes) and
+        (select artist_loudness+0.4 from attributes)
+and avg(s.speechiness) between (select artist_speechiness-0.2 from attributes)
+and
+        (select artist_speechiness+0.2 from attributes)
+and avg(s.acousticness) between (select artist_acousticness-0.2 from attributes)
+and
+        (select artist_acousticness+0.2 from attributes)
+and avg(s.instrumentalness) between (select artist_instrumentalness-0.2 from
+attributes) and
+        (select artist_instrumentalness+0.2 from attributes)
+and avg(s.liveness) between (select artist_liveness-0.2 from attributes) and
+        (select artist_liveness+0.2 from attributes)
+and avg(s.valence) between (select artist_valence-0.2 from attributes) and
+        (select artist_valence+0.2 from attributes)
+and avg(s.tempo) between (select artist_tempo-10 from attributes) and
+        (select artist_tempo+10 from attributes)
+ORDER BY
+abs((Select artist_danceability From attributes) - avg(s.danceability))
++ abs((Select artist_energy From attributes) - avg(s.energy))
++ abs((Select artist_loudness From attributes) - avg(s.loudness))/
+((Select max(Song.loudness) From Song) - (Select min(Song.loudness) From Song))
++ abs((Select artist_speechiness From attributes) - avg(s.speechiness))
++ abs((Select artist_acousticness From attributes) - avg(s.acousticness))
++ abs((Select artist_instrumentalness From attributes) - avg(s.instrumentalness))
++ abs((Select artist_liveness From attributes) - avg(s.liveness))
++ abs((Select artist_valence From attributes) - avg(s.valence))
++ abs((Select artist_tempo From attributes) - avg(s.tempo))/
+((Select max(tempo) From Song) - (Select min(tempo) From Song))
+LIMIT 100;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
