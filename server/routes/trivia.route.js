@@ -386,7 +386,6 @@ async function trivia_answers_5(req, res) {
           + abs(artist_tempo - artist_tempo2)/
               ((Select max(tempo) From Song) - (Select min(tempo) From Song))) desc
            LIMIT 50        ),
-      
               correct_answer as
                     (
                       select concat(cp.artist_name, ' - ', cp.artist_name2) as artist_name
@@ -423,95 +422,93 @@ async function trivia_answers_5(req, res) {
 // Which artists have songs in the Nashville Sound genre?
 async function trivia_answers_6(req, res) {
   connection.query(
-    `
+    ` 
     Select * from (
-    WITH attributes as
-      (select s.danceability as artist_danceability,
-              s.energy as artist_energy,
-              s.loudness as artist_loudness,
-              s.speechiness as artist_speechiness,
-              s.acousticness as artist_acousticness,
-              s.instrumentalness as artist_instrumentalness,
-              s.liveness as artist_liveness,
-              s.valence as artist_valence,
-              s.tempo as artist_tempo
-       from Genre s
-       where s.genre_name = 'Nashville Sound'
-        ),
-    correct_answer_prelim as
-    (select a.artist_name
-    from Song_artist a join Song s on s.song_id = a.song_id
-    group by a.artist_name
-    having avg(s.danceability) between (select artist_danceability-0.2 from attributes) and
-                                    (select artist_danceability+0.2 from attributes)
-    and avg(s.energy) between (select artist_energy-0.2 from attributes) and
-                                    (select artist_energy+0.2 from attributes)
-    and avg(s.loudness) between (select artist_loudness-0.4 from attributes) and
-                                    (select artist_loudness+0.4 from attributes)
-    and avg(s.speechiness) between (select artist_speechiness-0.2 from attributes) and
-                                    (select artist_speechiness+0.2 from attributes)
-    and avg(s.acousticness) between (select artist_acousticness-0.2 from attributes) and
-                                    (select artist_acousticness+0.2 from attributes)
-    and avg(s.instrumentalness) between (select artist_instrumentalness-0.2 from attributes) and
-                                    (select artist_instrumentalness+0.2 from attributes)
-    and avg(s.liveness) between (select artist_liveness-0.2 from attributes) and
-                                    (select artist_liveness+0.2 from attributes)
-    and avg(s.valence) between (select artist_valence-0.2 from attributes) and
-                                    (select artist_valence+0.2 from attributes)
-    and avg(s.tempo) between (select artist_tempo-20 from attributes) and
-                                    (select artist_tempo+20 from attributes)
-    ORDER BY
-        abs((Select artist_danceability From attributes) - avg(s.danceability))
-        + abs((Select artist_energy From attributes) - avg(s.energy))
-        + abs((Select artist_loudness From attributes) - avg(s.loudness))/
-            ((Select max(Song.loudness) From Song) - (Select min(Song.loudness) From Song))
-        + abs((Select artist_speechiness From attributes) - avg(s.speechiness))
-        + abs((Select artist_acousticness From attributes) - avg(s.acousticness))
-        + abs((Select artist_instrumentalness From attributes) - avg(s.instrumentalness))
-        + abs((Select artist_liveness From attributes) - avg(s.liveness))
-        + abs((Select artist_valence From attributes) - avg(s.valence))
-        + abs((Select artist_tempo From attributes) - avg(s.tempo))/
-            ((Select max(tempo) From Song) - (Select min(tempo) From Song))
-    LIMIT 50),
-        incorrect_answer_prelim as
-            (
-    select a.artist_name
-    from Song_artist a join Song s on s.song_id = a.song_id
-    group by a.artist_name
-    ORDER BY
-        abs((Select artist_danceability From attributes) - avg(s.danceability))
-        + abs((Select artist_energy From attributes) - avg(s.energy))
-        + abs((Select artist_loudness From attributes) - avg(s.loudness))/
-            ((Select max(Song.loudness) From Song) - (Select min(Song.loudness) From Song))
-        + abs((Select artist_speechiness From attributes) - avg(s.speechiness))
-        + abs((Select artist_acousticness From attributes) - avg(s.acousticness))
-        + abs((Select artist_instrumentalness From attributes) - avg(s.instrumentalness))
-        + abs((Select artist_liveness From attributes) - avg(s.liveness))
-        + abs((Select artist_valence From attributes) - avg(s.valence))
-        + abs((Select artist_tempo From attributes) - avg(s.tempo))/
-            ((Select max(tempo) From Song) - (Select min(tempo) From Song)) desc
-    LIMIT 50
-            ),
-              correct_answer as
-                  (
-                    select cp.artist_name
-                    from correct_answer_prelim cp
+      WITH attributes as
+        (select s.danceability as artist_danceability,
+                s.energy as artist_energy,
+                s.loudness as artist_loudness,
+                s.speechiness as artist_speechiness,
+                s.acousticness as artist_acousticness,
+                s.instrumentalness as artist_instrumentalness,
+                s.liveness as artist_liveness,
+                s.valence as artist_valence,
+                s.tempo as artist_tempo
+         from Genre s
+         where s.genre_name = 'Nashville Sound'
+          ),
+      correct_answer_prelim as
+      (select c.artist_name
+      from Artist_features_cache c
+      Where c.artist_danceability between (select artist_danceability-0.2 from attributes) and
+                                      (select artist_danceability+0.2 from attributes)
+      and c.artist_energy between (select artist_energy-0.2 from attributes) and
+                                      (select artist_energy+0.2 from attributes)
+      and c.artist_loudness between (select artist_loudness-0.4 from attributes) and
+                                      (select artist_loudness+0.4 from attributes)
+      and c.artist_speechiness between (select artist_speechiness-0.2 from attributes) and
+                                      (select artist_speechiness+0.2 from attributes)
+      and c.artist_acousticness between (select artist_acousticness-0.2 from attributes) and
+                                      (select artist_acousticness+0.2 from attributes)
+      and c.artist_instrumentalness between (select artist_instrumentalness-0.2 from attributes) and
+                                      (select artist_instrumentalness+0.2 from attributes)
+      and c.artist_liveness between (select artist_liveness-0.2 from attributes) and
+                                      (select artist_liveness+0.2 from attributes)
+      and c.artist_valence between (select artist_valence-0.2 from attributes) and
+                                      (select artist_valence+0.2 from attributes)
+      and c.artist_tempo between (select artist_tempo-20 from attributes) and
+                                      (select artist_tempo+20 from attributes)
+      ORDER BY
+          abs((Select artist_danceability From attributes) - c.artist_danceability)
+          + abs((Select artist_energy From attributes) - c.artist_energy)
+          + abs((Select artist_loudness From attributes) - c.artist_loudness)/
+              ((Select max(Song.loudness) From Song) - (Select min(Song.loudness) From Song))
+          + abs((Select artist_speechiness From attributes) - c.artist_speechiness)
+          + abs((Select artist_acousticness From attributes) - c.artist_acousticness)
+          + abs((Select artist_instrumentalness From attributes) - c.artist_instrumentalness)
+          + abs((Select artist_liveness From attributes) - c.artist_liveness)
+          + abs((Select artist_valence From attributes) - c.artist_valence)
+          + abs((Select artist_tempo From attributes) - c.artist_tempo)/
+              ((Select max(tempo) From Song) - (Select min(tempo) From Song))
+      LIMIT 50),
+          incorrect_answer_prelim as
+              (
+      SELECT c2.artist_name
+      FROM Artist_features_cache c2
+      ORDER BY
+          abs((Select artist_danceability From attributes) - c2.artist_danceability)
+          + abs((Select artist_energy From attributes) - c2.artist_energy)
+          + abs((Select artist_loudness From attributes) - c2.artist_loudness)/
+              ((Select max(Song.loudness) From Song) - (Select min(Song.loudness) From Song))
+          + abs((Select artist_speechiness From attributes) - c2.artist_speechiness)
+          + abs((Select artist_acousticness From attributes) - c2.artist_acousticness)
+          + abs((Select artist_instrumentalness From attributes) - c2.artist_instrumentalness)
+          + abs((Select artist_liveness From attributes) - c2.artist_liveness)
+          + abs((Select artist_valence From attributes) - c2.artist_valence)
+          + abs((Select artist_tempo From attributes) - c2.artist_tempo)/
+              ((Select max(tempo) From Song) - (Select min(tempo) From Song)) desc
+      LIMIT 50
+              ),
+                correct_answer as
+                    (
+                      select cp.artist_name
+                      from correct_answer_prelim cp
+                      order by rand()
+                      limit 1
+                    ),
+                incorrect_answer as (
+                    select  ip.artist_name
+                    from incorrect_answer_prelim ip
                     order by rand()
-                    limit 1
-                  ),
-              incorrect_answer as (
-                  select  ip.artist_name
-                  from incorrect_answer_prelim ip
-                  order by rand()
-                  limit 3
-              )
-              select c.artist_name, 'Correct' as answer_choice
-              from correct_answer c
-              union
-              select i.artist_name, 'Incorrect' as answer_choice
-              from incorrect_answer i
-          ) a
-        order by a.artist_name;`,
+                    limit 3
+                )
+                select c.artist_name, 'Correct' as answer_choice
+                from correct_answer c
+                union
+                select i.artist_name, 'Incorrect' as answer_choice
+                from incorrect_answer i
+            ) a
+          order by a.artist_name;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
@@ -527,32 +524,20 @@ async function trivia_answers_6(req, res) {
 // Which of these artists had the most danceable songs?
 async function trivia_answers_7(req, res) {
   connection.query(
-    `select *
-    from (
+    `Select *
+    From (
       with correct_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank <= 100
-                      )
-                  Group By a.artist_name
-                  order by avg(s.danceability) desc
+                  select c.artist_name
+                  from Artist_features_cache c
+                  order by c.artist_danceability desc
                   limit 50
               ),
           incorrect_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank
-                      )
-                  Group By a.artist_name
-                  order by avg(s.danceability) asc
+                  select c2.artist_name
+                  from Artist_features_cache c2
+                  order by c2.artist_danceability asc
                   limit 50
               ),
           correct_answer as
@@ -590,32 +575,20 @@ async function trivia_answers_7(req, res) {
 // Which of these artists had songs with the most speech?
 async function trivia_answers_8(req, res) {
   connection.query(
-    `select *
-    from (
+    `Select *
+    From (
       with correct_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank <= 100
-                      )
-                  Group By a.artist_name
-                  order by avg(s.speechiness) desc
+                  select c.artist_name
+                  From Artist_features_cache c
+                  order by c.artist_speechiness desc
                   limit 50
               ),
           incorrect_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank
-                      )
-                  Group By a.artist_name
-                  order by avg(s.speechiness) asc
+                  select c2.artist_name
+                  from Artist_features_cache c2
+                  order by c2.artist_speechiness asc
                   limit 50
               ),
           correct_answer as
@@ -637,7 +610,7 @@ async function trivia_answers_8(req, res) {
           select i.artist_name, 'Incorrect' as answer_choice
           from incorrect_answer i
       ) a
-    order by a.artist_name;`,
+    Order By a.artist_name;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
@@ -653,32 +626,20 @@ async function trivia_answers_8(req, res) {
 // Which of these artists had the most instrumental songs?
 async function trivia_answers_9(req, res) {
   connection.query(
-    `select *
-    from (
-      with correct_answer_prelim as
+    `Select *
+    From (
+      With correct_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank <= 100
-                      )
-                  Group By a.artist_name
-                  order by avg(s.instrumentalness) desc
+                  select c.artist_name
+                  from Artist_features_cache c
+                  order by c.artist_instrumentalness desc
                   limit 50
               ),
           incorrect_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank
-                      )
-                  Group By a.artist_name
-                  order by avg(s.instrumentalness) asc
+                  select c2.artist_name
+                  from Artist_features_cache c2
+                  order by c2.artist_instrumentalness asc
                   limit 50
               ),
           correct_answer as
@@ -700,7 +661,7 @@ async function trivia_answers_9(req, res) {
           select i.artist_name, 'Incorrect' as answer_choice
           from incorrect_answer i
       ) a
-    order by a.artist_name;`,
+    Order By a.artist_name;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
@@ -716,33 +677,22 @@ async function trivia_answers_9(req, res) {
 // Which of these artists had the slowest tempo songs?
 async function trivia_answers_10(req, res) {
   connection.query(
-    `select *
-    from (
+    `Select *
+    From (
       with correct_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank <= 100
-                      )
-                  Group By a.artist_name
-                  order by avg(s.tempo) desc
-                  limit 50
+                  select c.artist_name, artist_tempo
+                  FROM Artist_features_cache c
+                  Where artist_tempo > 0
+                  Order By c.artist_tempo asc
+                  Limit 50
               ),
           incorrect_answer_prelim as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
-                      select distinct song_id
-                      from Billboard
-                      where billboard_rank
-                      )
-                  Group By a.artist_name
-                  order by avg(s.tempo) asc
-                  limit 50
+                  select c2.artist_name
+                  from Artist_features_cache c2
+                  order by c2.artist_tempo desc
+                  Limit 50
               ),
           correct_answer as
               (
@@ -763,7 +713,8 @@ async function trivia_answers_10(req, res) {
           select i.artist_name, 'Incorrect' as answer_choice
           from incorrect_answer i
       ) a
-    order by a.artist_name;`,
+    order by a.artist_name;
+`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
