@@ -3,6 +3,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const apicache = require('apicache');
 const redis = require('redis');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 const app = express();
 const port = 3001;
@@ -13,11 +15,32 @@ const triviaRoutes = require('./routes/trivia.route');
 const userRoutes = require('./routes/user.route');
 
 app.use(morgan('dev'));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+// Configure Mongoose
+const uri = process.env.ATLAS_URI;
+
+mongoose.set('strictQuery', false);
+
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const { connection } = mongoose;
+connection.once('open', () => {
+  console.log('MongoDB database connection established successfully');
+});
 
 //configure apicache
 let cache = apicache.middleware;
-let cacheWithRedis = apicache.options({ redisClient: redis.createClient() }).middleware;
-
+let cacheWithRedis = apicache.options({
+  redisClient: redis.createClient(),
+}).middleware;
 
 //caching all routes for 5 minutes
 // app.use(cache('5 minutes'));
@@ -76,3 +99,11 @@ app.get('/triviaanswers_8', triviaRoutes.trivia_answers_8);
 app.get('/triviaanswers_9', triviaRoutes.trivia_answers_9);
 
 app.get('/triviaanswers_10', triviaRoutes.trivia_answers_10);
+
+app.post('/user', userRoutes.createUser);
+
+app.post('/login', userRoutes.loginUser);
+
+app.put('/user/songs', userRoutes.setSongs);
+
+app.get('/user/songs', userRoutes.getSongs);
