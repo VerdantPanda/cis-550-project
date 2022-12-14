@@ -101,7 +101,7 @@ async function recommended_artists(req, res) {
     avg(s.valence) as artist_valence,
     avg(s.tempo) as artist_tempo
     From Song s Join Song_artist a on s.song_id = a.song_id
-    Where a.artist_name = 'Madonna'
+    Where a.artist_name = '${ArtistName}'
     Group by a.artist_name
     )
 Select s.song_id, a.artist_name as recommended_artists
