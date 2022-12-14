@@ -25,16 +25,17 @@ app.use(
 const uri = process.env.ATLAS_URI;
 
 mongoose.set('strictQuery', false);
-/*
+
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-*/
+
 const { connection } = mongoose;
 connection.once('open', () => {
   console.log('MongoDB database connection established successfully');
 });
+
 
 //configure apicache
 let cache = apicache.middleware;
@@ -45,6 +46,7 @@ let cacheWithRedis = apicache.options({
 //caching all routes for 5 minutes
 // app.use(cache('5 minutes'));
 app.use(cacheWithRedis('5 minutes'));
+
 
 app.use(
   cors({
