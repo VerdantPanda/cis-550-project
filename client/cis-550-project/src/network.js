@@ -1,4 +1,5 @@
 import axios from 'axios';
+const FormData = require('form-data');
 
 const serverAddress = 'http://localhost:3001';
 
@@ -89,85 +90,126 @@ async function trivia_info(QuestionId) {
 
 async function trivia_answers_1(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_1', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_1', { params: { QuestionId } })
     .then((response) => {
       return response.data.results;
-  });
-  }
+    });
+}
 
 async function trivia_answers_2(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_2', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_2', { params: { QuestionId } })
     .then((response) => {
       return response.data.results;
-  });
-  }
+    });
+}
 
 async function trivia_answers_3(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_3', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_3', { params: { QuestionId } })
     .then((response) => {
-       return response.data.results;
-  });
-  }
-  
+      return response.data.results;
+    });
+}
+
 async function trivia_answers_4(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_4', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_4', { params: { QuestionId } })
     .then((response) => {
       return response.data.results;
-  });
-  }
+    });
+}
 
-  
 async function trivia_answers_5(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_5', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_5', { params: { QuestionId } })
     .then((response) => {
       return response.data.results;
-  });
-  }
+    });
+}
 
 async function trivia_answers_6(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_6', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_6', { params: { QuestionId } })
     .then((response) => {
       return response.data.results;
-  });
-  }
+    });
+}
 
 async function trivia_answers_7(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_7', {params: { QuestionId }})
-    .then((response) => {
-       return response.data.results;
-  });
-  }
-  
-async function trivia_answers_8(QuestionId) {
-  return axios
-    .get(serverAddress + '/triviaanswers_8', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_7', { params: { QuestionId } })
     .then((response) => {
       return response.data.results;
-  });
-  }
+    });
+}
 
+async function trivia_answers_8(QuestionId) {
+  return axios
+    .get(serverAddress + '/triviaanswers_8', { params: { QuestionId } })
+    .then((response) => {
+      return response.data.results;
+    });
+}
 
 async function trivia_answers_9(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_9', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_9', { params: { QuestionId } })
     .then((response) => {
-        return response.data.results;
-  });
-  }
-    
+      return response.data.results;
+    });
+}
+
 async function trivia_answers_10(QuestionId) {
   return axios
-    .get(serverAddress + '/triviaanswers_10', {params: { QuestionId }})
+    .get(serverAddress + '/triviaanswers_10', { params: { QuestionId } })
     .then((response) => {
-       return response.data.results;
-  });
-  }
+      return response.data.results;
+    });
+}
+
+async function create_user(username, password) {
+  const data = new FormData();
+  data.append('username', username);
+  data.append('password', password);
+  return axios({ data })
+    .post(serverAddress + '/user')
+    .then((response) => {
+      return response.data.results;
+    });
+}
+
+async function login(username, password) {
+  const data = new FormData();
+  data.append('username', username);
+  data.append('password', password);
+  return axios({ data })
+    .post(serverAddress + '/login')
+    .then((response) => {
+      return response.data.results;
+    });
+}
+
+async function setUserSongs(userid, songs) {
+  const data = new FormData();
+  data.append('userid', userid);
+  data.append('songs', songs);
+  return axios({ data })
+    .put(serverAddress + '/user/songs')
+    .then((response) => {
+      return response.data.results;
+    });
+}
+
+async function getUserSongs(userid) {
+  const data = new FormData();
+  data.append('userid', userid);
+  return axios({ data })
+    .get(serverAddress + '/user/songs')
+    .then((response) => {
+      return response.data.results;
+    });
+}
 
 export {
   artist_genres,
@@ -189,5 +231,9 @@ export {
   trivia_answers_7,
   trivia_answers_8,
   trivia_answers_9,
-  trivia_answers_10
+  trivia_answers_10,
+  create_user,
+  login,
+  setUserSongs,
+  getUserSongs,
 };

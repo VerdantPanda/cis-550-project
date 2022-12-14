@@ -129,7 +129,7 @@ export default function Root() {
                 </CardBody>
                 <CardFooter pad="small">
                   <Box alignContent="center" flex>
-                    <Button label="Begin!" onClick={() => setShow(false)} />
+                    <Button label="Continue as guest" onClick={() => setShow(false)} />
                   </Box>
                 </CardFooter>
               </Card>
