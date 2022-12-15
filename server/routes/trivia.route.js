@@ -50,43 +50,38 @@ async function trivia_info(req, res) {
 // Which of these artists had a song that appeared on a soundtrack and topped the Billboard ‘Hot 100’ chart?
 async function trivia_answers_1(req, res) {
   connection.query(
-    `select *
-    from (
-      with correct_answer as
+    `Select *
+    From (
+      With correct_answer as
               (
-                  select a.artist_name
-                  from Song_artist a join Song s on s.song_id=a.song_id
-                  where a.song_id in (
+                  Select a.artist_name
+                  From Artist_features_cache c
+                  Left Join Song_artist a on c.artist_name = a.artist_name
+                  Left Join Song s on s.song_id=a.song_id
+                  Where soundtrack_artist = 1
+                  and billboard_artist = 1
+                  and a.song_id in (
                       select distinct song_id
                       from Billboard
                       where billboard_rank = 1
                       )
-                  and a.song_id in (
-                      select distinct song_id
-                      from Soundtrack_song
-              )
-                  order by Rand()
-                  limit 1
+                  Order By Rand()
+                  Limit 1
               ),
           incorrect_answer as
-              (select artist_name, 'Incorrect' as answer_choice
-               from Song_artist a
-                        join Song s on s.song_id = a.song_id
-               where a.song_id not in (select distinct song_id
-                                       from Billboard
-                                       where billboard_rank = 1)
-                 and a.song_id not in (select distinct song_id
-                                       from Soundtrack_song)
-               order by Rand()
-               limit 3)
+              (Select artist_name, 'Incorrect' as answer_choice
+               From Artist_features_cache c2
+               Where billboard_artist = 0 and soundtrack_artist = 0
+               Order By Rand()
+               Limit 3)
 
-          select c.artist_name, 'Correct' as answer_choice
-          from correct_answer c
-          union
-          select i.artist_name, 'Incorrect' as answer_choice
-          from incorrect_answer i
+          Select c.artist_name, 'Correct' as answer_choice
+          From correct_answer c
+          Union
+          Select i.artist_name, 'Incorrect' as answer_choice
+          From incorrect_answer i
       ) a
-    order by a.artist_name;`,
+    Order By a.artist_name;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
