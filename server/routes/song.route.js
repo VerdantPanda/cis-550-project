@@ -127,42 +127,54 @@ async function song_recommendations(req, res) {
   const SongId = req.query.SongId ? req.query.SongId : 1;
   connection.query(
     `WITH attributes as
-        (select s.song_name,
-                s.song_id,
-                s.danceability as artist_danceability,
-              s.energy as artist_energy,
-                s.loudness as artist_loudness,
-                s.speechiness as artist_speechiness,
-                s.acousticness as artist_acousticness,
-                s.instrumentalness as artist_instrumentallness,
-                s.liveness as artist_liveness,
-                s.valence as artist_valence,
-                s.tempo as artist_tempo
-        from Song s
-        where s.song_id = ${SongId}
-          )
-      select s.song_id, s.song_name, s.album, s.explicit, s.duration_ms, s.song_year
-      from Song s
-      where s.song_id <> (select song_id from attributes)
-      and s.danceability between (select artist_danceability-0.2 from attributes) and
-                                      (select artist_danceability+0.2 from attributes)
-      and s.energy between (select artist_energy-0.2 from attributes) and
-                                      (select artist_energy+0.2 from attributes)
-      and s.loudness between (select artist_loudness-0.4 from attributes) and
-                                      (select artist_loudness+0.4 from attributes)
-      and s.speechiness between (select artist_speechiness-0.2 from attributes) and
-                                      (select artist_speechiness+0.2 from attributes)
-      and s.acousticness between (select artist_acousticness-0.2 from attributes) and
-                                      (select artist_acousticness+0.2 from attributes)
-      and s.instrumentalness between (select artist_instrumentallness-0.2 from attributes) and
-                                      (select artist_instrumentallness+0.2 from attributes)
-      and s.liveness between (select artist_liveness-0.2 from attributes) and
-                                      (select artist_liveness+0.2 from attributes)
-      and s.valence between (select artist_valence-0.2 from attributes) and
-                                      (select artist_valence+0.2 from attributes)
-      and s.tempo between (select artist_tempo-20 from attributes) and
-                                      (select artist_tempo+20 from attributes)
-      limit 10;`,
+           (select s.song_name,
+                   s.song_id,
+                   s.danceability as artist_danceability,
+                 s.energy as artist_energy,
+                   s.loudness as artist_loudness,
+                   s.speechiness as artist_speechiness,
+                   s.acousticness as artist_acousticness,
+                   s.instrumentalness as artist_instrumentalness,
+                   s.liveness as artist_liveness,
+                   s.valence as artist_valence,
+                   s.tempo as artist_tempo
+           from Song s
+           where s.song_id = ${SongId}
+             )
+         select s.song_id, s.song_name, s.album, s.explicit, s.duration_ms, s.song_year
+         from Song s
+         where s.song_id <> (select song_id from attributes)
+         and s.danceability between (select artist_danceability-0.2 from attributes) and
+                                         (select artist_danceability+0.2 from attributes)
+         and s.energy between (select artist_energy-0.2 from attributes) and
+                                         (select artist_energy+0.2 from attributes)
+         and s.loudness between (select artist_loudness-0.4 from attributes) and
+                                         (select artist_loudness+0.4 from attributes)
+         and s.speechiness between (select artist_speechiness-0.2 from attributes) and
+                                         (select artist_speechiness+0.2 from attributes)
+         and s.acousticness between (select artist_acousticness-0.2 from attributes) and
+                                         (select artist_acousticness+0.2 from attributes)
+         and s.instrumentalness between (select artist_instrumentalness-0.2 from attributes) and
+                                         (select artist_instrumentalness+0.2 from attributes)
+         and s.liveness between (select artist_liveness-0.2 from attributes) and
+                                         (select artist_liveness+0.2 from attributes)
+         and s.valence between (select artist_valence-0.2 from attributes) and
+                                         (select artist_valence+0.2 from attributes)
+         and s.tempo between (select artist_tempo-20 from attributes) and
+                                         (select artist_tempo+20 from attributes)
+   ORDER BY
+       abs((Select artist_danceability From attributes) - s.danceability)
+       + abs((Select artist_energy From attributes) - s.energy)
+       + abs((Select artist_loudness From attributes) - s.loudness)/
+           ((Select max(Song.loudness) From Song) - (Select min(Song.loudness) From Song))
+       + abs((Select artist_speechiness From attributes) - s.speechiness)
+       + abs((Select artist_acousticness From attributes) - s.acousticness)
+       + abs((Select artist_instrumentalness From attributes) - s.instrumentalness)
+       + abs((Select artist_liveness From attributes) - s.liveness)
+       + abs((Select artist_valence From attributes) - s.valence)
+       + abs((Select artist_tempo From attributes) - s.tempo)/
+           ((Select max(tempo) From Song) - (Select min(tempo) From Song))
+         limit 10;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);

@@ -51,6 +51,7 @@ connection.once('open', () => {
   console.log('MongoDB database connection established successfully');
 });
 
+
 //configure apicache
 let cache = apicache.middleware;
 let cacheWithRedis = apicache.options({
@@ -60,6 +61,7 @@ let cacheWithRedis = apicache.options({
 //caching all routes for 5 minutes
 // app.use(cache('5 minutes'));
 app.use(cacheWithRedis('5 minutes'));
+
 
 app.use(
   cors({
