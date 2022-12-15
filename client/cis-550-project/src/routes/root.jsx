@@ -131,17 +131,13 @@ export default function Root() {
             >
               <Card height="large" width="large" background="light-1">
                 <CardHeader pad="medium">
-                  <Heading>Welcome to the Music Movie Dashboard</Heading>
+                  <Heading>Welcome to Melody Match!</Heading>
                 </CardHeader>
                 <CardBody pad="medium">
                   <Text>
-                    Our site aggregates and analyzes music and movie data in
-                    order to provide tailored recommendations based on their
-                    currrent preferences.
-                    <br></br>
-                    <br></br>
-                    If you would like to keep track of your favorite songs then
-                    create an account or login.
+                    Our site aggregates and analyzes music data in order to
+                    provide tailored recommendations based on user currrent
+                    preferences.
                   </Text>
                   <br></br>
 
@@ -191,6 +187,7 @@ export default function Root() {
                 <CardFooter pad="small">
                   <Box alignContent="center" flex>
                     <Button
+                      primary
                       label="Continue as guest"
                       onClick={() => setShow(false)}
                     />
@@ -224,12 +221,14 @@ export default function Root() {
               <PageHeader
                 title="Melody Match"
                 subtitle={
-                  user.username.length > 0 ?
-                  <Text>
-                    Welcome {user.username}!
-                    {/* Your favorite songs are{' '} {user.favSongs}{' '} */}
-                  </Text> :
-                  <Text>For all your music related needs.</Text>
+                  user.username.length > 0 ? (
+                    <Text>
+                      Welcome {user.username}!
+                      {/* Your favorite songs are{' '} {user.favSongs}{' '} */}
+                    </Text>
+                  ) : (
+                    <Text>For all your music related needs.</Text>
+                  )
                 }
                 // gridArea="header"
                 size="small"
