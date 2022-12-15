@@ -4,15 +4,29 @@ const morgan = require('morgan');
 const apicache = require('apicache');
 const redis = require('redis');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 require('dotenv').config();
 
 const app = express();
 const port = 3001;
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 
 const artistRoutes = require('./routes/artist.route');
 const songRoutes = require('./routes/song.route');
 const triviaRoutes = require('./routes/trivia.route');
 const userRoutes = require('./routes/user.route');
+
+// SSL Https Code
+
+var key = fs.readFileSync('./certs/selfsigned.key');
+var cert = fs.readFileSync('./certs/selfsigned.crt');
+var options = {
+  key: key,
+  cert: cert,
+};
 
 app.use(morgan('dev'));
 app.use(
@@ -20,6 +34,7 @@ app.use(
     extended: true,
   })
 );
+app.use(jsonParser);
 
 // Configure Mongoose
 const uri = process.env.ATLAS_URI;
@@ -56,9 +71,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}`);
+// });
 
 app.get('/artist/search', artistRoutes.search_artist_by_name);
 
@@ -107,3 +122,11 @@ app.post('/login', userRoutes.loginUser);
 app.put('/user/songs', userRoutes.setSongs);
 
 app.get('/user/songs', userRoutes.getSongs);
+
+const httpServer = http.createServer(app);
+const server = https.createServer(options, app);
+
+httpServer.listen(8080);
+server.listen(port, () => {
+  console.log('server starting on port : ' + port);
+});

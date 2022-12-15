@@ -13,6 +13,9 @@ import {
   CardBody,
   CardHeader,
   Heading,
+  Form,
+  FormField,
+  TextInput,
 } from 'grommet';
 
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -21,11 +24,20 @@ import { Microphone, Music, Gamepad, Sign, Analytics } from 'grommet-icons';
 
 import { useEffect, useState } from 'react';
 
+import { login, create_user } from '../network.js';
+
 // import { Slide } from 'react-awesome-reveal';
 
 export default function Root() {
   const navigate = useNavigate();
+
+  const [user, setUser] = useState({
+    username: '',
+    userid: '',
+    favSongs: '',
+  });
   const [functCount, setFunctCount] = useState(0);
+
   useEffect(() => {
     if (functCount === 0) {
       navigate('dashboard');
@@ -34,6 +46,7 @@ export default function Root() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [show, setShow] = useState(true);
+  const [value, setValue] = useState({ username: '', password: '' });
 
   const SidebarButton = ({ icon, label, click, tip }) => (
     <Box pad="medium" fill={true}>
@@ -116,7 +129,7 @@ export default function Root() {
               onEsc={() => setShow(false)}
               onClickOutside={() => setShow(false)}
             >
-              <Card height="medium" width="large" background="light-1">
+              <Card height="large" width="large" background="light-1">
                 <CardHeader pad="medium">
                   <Heading>Welcome to the Music Movie Dashboard</Heading>
                 </CardHeader>
@@ -125,11 +138,62 @@ export default function Root() {
                     Our site aggregates and analyzes music and movie data in
                     order to provide tailored recommendations based on their
                     currrent preferences.
+                    <br></br>
+                    <br></br>
+                    If you would like to keep track of your favorite songs then
+                    create an account or login.
                   </Text>
+                  <br></br>
+
+                  <Form
+                    value={value}
+                    onChange={(nextValue) => setValue(nextValue)}
+                    onSubmit={async ({ value }) => {
+                      // TODO: login
+                      console.log('login button clicked');
+                      const user = await login(value.username, value.password);
+                      if (user.username) {
+                        setUser(user);
+                        setShow(false);
+                        localStorage.setItem('userid', user.userid);
+                      }
+                    }}
+                  >
+                    <FormField name="username" label="Username">
+                      <TextInput name="username" plain />
+                    </FormField>
+                    <br></br>
+                    <FormField name="password" label="Password">
+                      <TextInput name="password" plain />
+                    </FormField>
+                    <Box direction="row" gap="medium">
+                      <Button type="submit" primary label="Login" />
+                      <Button
+                        primary
+                        label="Sign Up"
+                        onClick={async (e) => {
+                          console.log('sign up clicked');
+                          const newUser = await create_user(
+                            value.username,
+                            value.password
+                          );
+                          console.log('NEW USER SIGN UP');
+                          console.log(newUser);
+                          setUser(newUser);
+                          setShow(false);
+                          localStorage.setItem('userid', user.userid);
+                        }}
+                      />
+                      {/* <Button type="reset" label="Reset" /> */}
+                    </Box>
+                  </Form>
                 </CardBody>
                 <CardFooter pad="small">
                   <Box alignContent="center" flex>
-                    <Button label="Continue as guest" onClick={() => setShow(false)} />
+                    <Button
+                      label="Continue as guest"
+                      onClick={() => setShow(false)}
+                    />
                   </Box>
                 </CardFooter>
               </Card>
@@ -156,12 +220,22 @@ export default function Root() {
           >
             {/* <Box gridArea="header" background="brand">
           </Box> */}
-            <PageHeader
-              title="Movie Music Dashboard"
-              subtitle="Please select a page."
-              gridArea="header"
-              size="small"
-            />
+            <Box gridArea="header">
+              <PageHeader
+                title="Melody Match"
+                subtitle={
+                  user.username.length > 0 ?
+                  <Text>
+                    Welcome {user.username}!
+                    {/* Your favorite songs are{' '} {user.favSongs}{' '} */}
+                  </Text> :
+                  <Text>For all your music related needs.</Text>
+                }
+                // gridArea="header"
+                size="small"
+              />
+            </Box>
+
             <Box gridArea="nav" background="light-5">
               <Sidebar
                 responsive={true}

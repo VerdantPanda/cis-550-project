@@ -11,11 +11,17 @@ import {
   CardFooter,
   CardHeader,
   Spinner,
+  Image,
 } from 'grommet';
 
-import { search_song_by_name } from '../network.js';
+import {
+  search_song_by_name,
+  setUserSongs,
+  getUserSongs,
+  getAlbumImage,
+} from '../network.js';
 
-import { Favorite, ShareOption } from 'grommet-icons';
+import { Favorite } from 'grommet-icons';
 
 import { useState, useEffect } from 'react';
 
@@ -53,6 +59,7 @@ export default function Songs() {
     duration_ms: 0,
     song_year: 0,
   });
+  const [currentImgUrl, setCurrentImgUrl] = useState('');
 
   const onChange = (event) => {
     setValue(event.target.value);
@@ -145,8 +152,11 @@ export default function Songs() {
                   background={`dark-${(item % 3) + 1}`}
                   border={{ color: 'brand', size: 'small' }}
                   elevation="large"
-                  onClick={() => {
+                  onClick={async () => {
                     setCurrentSong(item);
+                    setCurrentImgUrl('LOAD');
+                    const imgResponse = await getAlbumImage(item.album);
+                    setCurrentImgUrl(imgResponse);
                   }}
                 >
                   <Text>{item.song_name}</Text>
@@ -156,11 +166,12 @@ export default function Songs() {
           </InfiniteScroll>
         </Box>
         <Box>
-          <Card height="medium" width="medium" background="light-4">
+          <Card height="large" width="medium" background="light-4">
             <CardHeader pad="medium">
-              <Text size="large">{currentSong.song_name}</Text>
+              <Text size="large" truncate="tip">
+                {currentSong.song_name}
+              </Text>
             </CardHeader>
-
             <CardBody pad="medium">
               <Text
                 size="small"
@@ -178,10 +189,39 @@ export default function Songs() {
                 <br />
                 {currentSong.explicit ? 'Explicit' : null}
               </Text>
+              <Box height="small" width="small">
+                {currentImgUrl === 'LOAD' ? (
+                  <Spinner size='large'></Spinner>
+                ) : (
+                  <Image fit="cover" src={currentImgUrl} />
+                )}
+              </Box>
             </CardBody>
-            <CardFooter pad={{ horizontal: 'small' }} background="light-2">
-              <Button icon={<Favorite color="red" />} hoverIndicator />
-              <Button icon={<ShareOption color="plain" />} hoverIndicator />
+            <CardFooter
+              pad={{ horizontal: 'small', vertical: 'small' }}
+              background="light-2"
+            >
+              {/* {}
+              <Button
+                icon={<Favorite color="white" />}
+                hoverIndicator={true}
+                color="red"
+                label="Favorite!"
+                primary
+                fill
+                onClick={async () => {
+                  console.log('fav butt clicked');
+                  // setUserSongs, getUserSongs
+                  const userid = localStorage.getItem('userid');
+                  const currentUserSongs = await getUserSongs(userid);
+                  await setUserSongs(
+                    userid,
+                    currentUserSongs + ', ' + currentSong.song_name
+                  );
+                  // currentSong.song_name
+                }}
+              /> */}
+              {/* <Button icon={<ShareOption color="plain" />} hoverIndicator /> */}
             </CardFooter>
           </Card>
         </Box>

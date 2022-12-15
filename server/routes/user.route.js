@@ -34,6 +34,7 @@ function createUser(req, res) {
           .json({
             username: mongoObj.name,
             userid: mongoObj.id,
+            favSongs: mongoObj.songs ?? '',
           })
           .status(200);
         console.log(`User \'${req.body.username}\' added!`);
@@ -81,6 +82,10 @@ function loginUser(req, res) {
           });
       }
     });
+  } else {
+    res.status(400).json({
+      msg: 'username or password missing',
+    });
   }
 }
 
@@ -97,7 +102,9 @@ async function setSongs(req, res) {
   }
   if (!err) {
     console.log(`User ${userid} successfully updated song list`);
-    res.status(200).json({ msg: `User ${userid} successfully updated song list` });;
+    res
+      .status(200)
+      .json({ msg: `User ${userid} successfully updated song list` });
   } else {
     res.status(400);
   }

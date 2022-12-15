@@ -1,7 +1,12 @@
 import axios from 'axios';
 const FormData = require('form-data');
 
-const serverAddress = 'http://localhost:3001';
+// const ImageSearchAPI = require('@azure/cognitiveservices-imagesearch');
+// const ImageSearchAPIClient = ImageSearchAPI.ImageSearchClient;
+// const CognitiveServicesCredentials =
+//   require('@azure/ms-rest-azure-js').CognitiveServicesCredentials;
+
+const serverAddress = 'http://localhost:8080';
 
 async function artist_genres(ArtistName) {
   return axios
@@ -169,46 +174,66 @@ async function trivia_answers_10(QuestionId) {
 }
 
 async function create_user(username, password) {
-  const data = new FormData();
-  data.append('username', username);
-  data.append('password', password);
-  return axios({ data })
-    .post(serverAddress + '/user')
-    .then((response) => {
-      return response.data.results;
-    });
+  const response = await fetch(serverAddress + '/user', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  });
+  return response.json();
 }
 
 async function login(username, password) {
-  const data = new FormData();
-  data.append('username', username);
-  data.append('password', password);
-  return axios({ data })
-    .post(serverAddress + '/login')
-    .then((response) => {
-      return response.data.results;
-    });
+  const response = await fetch(serverAddress + '/login', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  });
+  return response.json();
 }
 
 async function setUserSongs(userid, songs) {
   const data = new FormData();
   data.append('userid', userid);
   data.append('songs', songs);
-  return axios({ data })
-    .put(serverAddress + '/user/songs')
-    .then((response) => {
-      return response.data.results;
-    });
+  return axios.put(serverAddress + '/user/songs', data).then((response) => {
+    return response.data.results;
+  });
 }
 
 async function getUserSongs(userid) {
   const data = new FormData();
   data.append('userid', userid);
-  return axios({ data })
-    .get(serverAddress + '/user/songs')
-    .then((response) => {
-      return response.data.results;
-    });
+  return axios.get(serverAddress + '/user/songs', data).then((response) => {
+    return response.data.results;
+  });
+}
+
+async function getAlbumImage(albumName) {
+  let subscriptionKey = 'b20665ee28d54fada3cc196f4cefcb00';
+  let host = 'api.bing.microsoft.com';
+  let path = '/v7.0/images/search';
+  let term = albumName + ' album cover';
+
+  const response = await fetch(
+    'https://' + host + path + '?q=' + encodeURIComponent(term),
+    {
+      method: 'get',
+      headers: {
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+      },
+      // body: JSON.stringify({ name: 'val' }),
+    }
+  );
+  const resJson = await response.json();
+  if (resJson.value[0].contentUrl) {
+    return resJson.value[0].contentUrl;
+  }
+
+  return '//v2.grommet.io/assets/Wilderpeople_Ricky.jpg';
 }
 
 export {
@@ -236,4 +261,5 @@ export {
   login,
   setUserSongs,
   getUserSongs,
+  getAlbumImage,
 };
