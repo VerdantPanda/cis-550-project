@@ -67,12 +67,12 @@ export default function Trivia() {
     <Box pad="large" margin={{right: "xlarge"}}>
 
     <Text size="xlarge" weight="bold">
-      Play the Music Matcher Trivia Game!
+      Play the Music Match Trivia Game!
     </Text>
     <br></br> 
 
     <Text size="medium" weight="bold">
-      Test your knowledge about Billboard Top 100 songs, soundtracks, artists and genres.
+      Test your knowledge about songs, soundtracks, artists and genres.
     </Text>
     <br></br><br></br>
 

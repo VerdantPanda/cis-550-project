@@ -211,7 +211,7 @@ async function trivia_answers_4(req, res) {
                         WITH attributes as
                                  (SELECT c.artist_name,
                                          c.artist_danceability,
-                                         c_artist_energy,
+                                         c.artist_energy,
                                          c.artist_loudness,
                                          c.artist_speechiness,
                                          c.artist_acousticness,
@@ -219,9 +219,8 @@ async function trivia_answers_4(req, res) {
                                          c.artist_liveness,
                                          c.artist_valence,
                                          c.artist_tempo
-                                  FROM Artist_features_cache
-                                  WHERE c.artist_name = 'Elton John'
-                                  GROUP BY sa.artist_name),
+                                  FROM Artist_features_cache c
+                                  WHERE c.artist_name = 'Elton John'),
                             correct_genres as
                         (SELECT g.genre_name  as artist_genres,
                                abs((Select artist_danceability From attributes) - g.danceability)
@@ -248,7 +247,7 @@ async function trivia_answers_4(req, res) {
                                      + abs((Select artist_tempo From attributes) - g.tempo) /
                                        ((Select max(tempo) From Song) - (Select min(tempo) From Song))
                         LIMIT 1),
-      
+
                          incorrect_genres as
                         (SELECT g.genre_name  as artist_genres,
                                abs((Select artist_danceability From attributes) - g.danceability)
@@ -274,7 +273,7 @@ async function trivia_answers_4(req, res) {
                                      + abs((Select artist_valence From attributes) - g.valence)
                                      + abs((Select artist_tempo From attributes) - g.tempo) /
                                        ((Select max(tempo) From Song) - (Select min(tempo) From Song)) Desc LIMIT 3)
-      
+
                         SELECT artist_genres as artist_name, 'Correct' as answer_choice FROM correct_genres
                         UNION
                         SELECT artist_genres as artist_name, 'Incorrect' as answer_choice from incorrect_genres
@@ -295,23 +294,21 @@ async function trivia_answers_4(req, res) {
 // Which of the following artists has featured with the most number of other artists?
 async function trivia_answers_5(req, res) {
   connection.query(
-    `with correct_answer as (
-      select a.artist_name,
-    count(b.artist_name) as featured_artist_count
-    from Song_artist a
-    join Song_artist b on a.song_id = b.song_id and a.artist_name <> b.artist_name
-    group by a.artist_name
-    order by featured_artist_count desc
-    limit 1)
-select artist_name, 'Correct' as answer_choice
-from correct_answer
-union
-(select artist_name, 'Incorrect' as answer_choice
-from Song_artist
-where artist_name <> (select artist_name from correct_answer)
-order by rand()
-limit 3)
-order by artist_name;`,
+    `Select * From (
+      With correct_answer as (
+      Select c.artist_name, c.collaborator_count
+      From Artist_collaborator_cache c
+      Order By collaborator_count desc
+      Limit 1)
+  Select artist_name, 'Correct' as answer_choice
+  From correct_answer
+  Union
+  (Select artist_name, 'Incorrect' as answer_choice
+  From Song_artist
+  Where artist_name <> (Select artist_name From correct_answer)
+  Order By rand()
+  Limit 3)) a
+  Order By artist_name;`,
     function (error, results, fields) {
       if (error) {
         console.log(error);
