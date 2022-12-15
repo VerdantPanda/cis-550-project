@@ -209,19 +209,18 @@ async function trivia_answers_4(req, res) {
     `SELECT * FROM (
       -- ## Search artist genres
                         WITH attributes as
-                                 (SELECT artist_name,
-                                         avg(s.danceability)     as artist_danceability,
-                                         avg(s.energy)           as artist_energy,
-                                         avg(s.loudness)         as artist_loudness,
-                                         avg(s.speechiness)      as artist_speechiness,
-                                         avg(s.acousticness)     as artist_acousticness,
-                                         avg(s.instrumentalness) as artist_instrumentalness,
-                                         avg(s.liveness)         as artist_liveness,
-                                         avg(s.valence)          as artist_valence,
-                                         avg(s.tempo)            as artist_tempo
-                                  FROM Song_artist sa
-                                           LEFT JOIN Song s on s.song_id = sa.song_id
-                                  WHERE sa.artist_name = 'Elton John'
+                                 (SELECT c.artist_name,
+                                         c.artist_danceability,
+                                         c_artist_energy,
+                                         c.artist_loudness,
+                                         c.artist_speechiness,
+                                         c.artist_acousticness,
+                                         c.artist_instrumentalness,
+                                         c.artist_liveness,
+                                         c.artist_valence,
+                                         c.artist_tempo
+                                  FROM Artist_features_cache
+                                  WHERE c.artist_name = 'Elton John'
                                   GROUP BY sa.artist_name),
                             correct_genres as
                         (SELECT g.genre_name  as artist_genres,

@@ -37,19 +37,17 @@ async function artist_genres(req, res) {
   connection.query(
     `WITH attributes as
     (select artist_name,
-        avg(s.danceability) as artist_danceability,
-    avg(s.energy) as artist_energy,
-    avg(s.loudness) as artist_loudness,
-    avg(s.speechiness) as artist_speechiness,
-    avg(s.acousticness) as artist_acousticness,
-    avg(s.instrumentalness) as artist_instrumentalness,
-    avg(s.liveness) as artist_liveness,
-    avg(s.valence) as artist_valence,
-    avg(s.tempo) as artist_tempo
-    from Song_artist sa
-    left join Song s on s.song_id = sa.song_id
-    where sa.artist_name = '${ArtistName}'
-    Group by sa.artist_name
+        c.artist_danceability,
+    c.artist_energy,
+    c.artist_loudness,
+    c.artist_speechiness,
+    c.artist_acousticness,
+    c.artist_instrumentalness,
+    c.artist_liveness,
+    c.artist_valence,
+    c.artist_tempo
+    From Artist_features_cache c
+    Where c.artist_name = '${ArtistName}'
     )
 select g.genre_name as artist_genres
 from Genre g
