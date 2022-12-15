@@ -67,7 +67,7 @@ export default function Trivia() {
     <Box pad="large" margin={{right: "xlarge"}}>
 
     <Text size="xlarge" weight="bold">
-      Play the Music Match Trivia Game!
+      Play the Melody Match Trivia Game!
     </Text>
     <br></br> 
 
