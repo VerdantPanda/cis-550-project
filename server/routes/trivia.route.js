@@ -292,6 +292,39 @@ async function trivia_answers_4(req, res) {
 }
 
 
+// Which of the following artists has featured with the most number of other artists?
+async function trivia_answers_5(req, res) {
+  connection.query(
+    `with correct_answer as (
+      select a.artist_name,
+    count(b.artist_name) as featured_artist_count
+    from Song_artist a
+    join Song_artist b on a.song_id = b.song_id and a.artist_name <> b.artist_name
+    group by a.artist_name
+    order by featured_artist_count desc
+    limit 1)
+select artist_name, 'Correct' as answer_choice
+from correct_answer
+union
+(select artist_name, 'Incorrect' as answer_choice
+from Song_artist
+where artist_name <> (select artist_name from correct_answer)
+order by rand()
+limit 3)
+order by artist_name;`,
+    function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.json({ error: error });
+      } else if (results) {
+        res.json({ results: results });
+      }
+    }
+  );
+}
+
+
+/*
 // Which two artists have songs in the most similar genres?
 async function trivia_answers_5(req, res) {
   connection.query(
@@ -416,7 +449,7 @@ async function trivia_answers_5(req, res) {
     }
   );
 }
-
+*/
 
 // Which artists have songs in the Nashville Sound genre?
 async function trivia_answers_6(req, res) {
