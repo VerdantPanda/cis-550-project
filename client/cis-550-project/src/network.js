@@ -7,6 +7,7 @@ const FormData = require('form-data');
 //   require('@azure/ms-rest-azure-js').CognitiveServicesCredentials;
 
 const serverAddress = 'http://localhost:8080';
+// const serverAddress = 'http://localhost:3001';
 
 async function artist_genres(ArtistName) {
   return axios
@@ -213,7 +214,7 @@ async function getUserSongs(userid) {
 }
 
 async function getAlbumImage(albumName) {
-  let subscriptionKey = 'b20665ee28d54fada3cc196f4cefcb00';
+  let subscriptionKey = 'b58071833fed45708889d6e8f7ae8668';
   let host = 'api.bing.microsoft.com';
   let path = '/v7.0/images/search';
   let term = albumName + ' album cover';

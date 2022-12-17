@@ -35,7 +35,7 @@ app.use(
   })
 );
 app.use(jsonParser);
-/*
+
 // Configure Mongoose
 const uri = process.env.ATLAS_URI;
 
@@ -62,7 +62,7 @@ const redisClient = redis.createClient();
 let cacheWithRedis = apicache.options({
   redisClient,
 }).middleware;
-*/
+
 //caching all routes for 5 minutes
 
 // TODO: manually apply this to all routes except quiz ones
@@ -81,7 +81,7 @@ app.get('/', (req, res) => {
 // app.listen(port, () => {
 //   console.log(`Example app listening on port ${port}`);
 // });
-/*
+
 app.get(
   '/artist/search',
   cacheWithRedis('5 minutes'),
@@ -125,7 +125,7 @@ app.get(
   cacheWithRedis('5 minutes'),
   songRoutes.song_recommendations
 );
-*/
+
 app.get('/triviaquestion', triviaRoutes.trivia_question);
 
 app.get('/triviainfo', triviaRoutes.trivia_info);
@@ -151,13 +151,13 @@ app.get('/triviaanswers_9', triviaRoutes.trivia_answers_9);
 app.get('/triviaanswers_10', triviaRoutes.trivia_answers_10);
 
 app.post('/user', userRoutes.createUser);
-/*
+
 app.post('/login', cacheWithRedis('5 minutes'), userRoutes.loginUser);
 
 app.put('/user/songs', cacheWithRedis('5 minutes'), userRoutes.setSongs);
 
 app.get('/user/songs', cacheWithRedis('5 minutes'), userRoutes.getSongs);
-*/
+
 const httpServer = http.createServer(app);
 const server = https.createServer(options, app);
 

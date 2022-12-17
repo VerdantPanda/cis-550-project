@@ -32,7 +32,7 @@ export default function Root() {
   const navigate = useNavigate();
 
   const [user, setUser] = useState({
-    username: '',
+    username: null,
     userid: '',
     favSongs: '',
   });
@@ -221,7 +221,7 @@ export default function Root() {
               <PageHeader
                 title="Melody Match"
                 subtitle={
-                  user.username.length > 0 ? (
+                  user.username ? (
                     <Text>
                       Welcome {user.username}!
                       {/* Your favorite songs are{' '} {user.favSongs}{' '} */}
